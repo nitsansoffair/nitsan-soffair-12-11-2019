@@ -1,43 +1,33 @@
 import api from '../apis';
-import { transformWeather } from './transformer';
+import transformer from './transformer';
 import {
-    FETCH_AUTOCOMPLETE,
-    FETCH_WEATHER,
-    FETCH_FORECAST,
+    FETCH_WEATHER_AND_FORECAST,
     ADD_FAVORITE,
     DELETE_FAVORITE,
     SELECT_CITY
 } from './types';
 
-// async actions
-export const getAutocomplete = (term) => async(dispatch) => {
-    const { key } = await api.getAutocomplete(term);
+// Async actions
+export const fetchWeatherAndForecast = (term) => async(dispatch) => {
+    try {
+        const { Key, LocalizedName } = await api.getAutocomplete(term);
+        const weatherData = await api.getWeather(Key);
+        const fivedayForecast = await api.getFivedayForecast(Key);
 
-    dispatch({
-        type: FETCH_AUTOCOMPLETE,
-        payload: key
-    });
+        dispatch({
+            type: FETCH_WEATHER_AND_FORECAST,
+            payload: {
+                ...transformer.weather(weatherData),
+                LocalizedName,
+                fivedayForecast
+            }
+        });
+    } catch (e) {
+        console.log(e);
+    }
 };
 
-export const getWeather = (cityKey) => async(dispatch) => {
-    const weather = await api.getWeather(cityKey);
-
-    dispatch({
-        type: FETCH_WEATHER,
-        payload: transformWeather(weather)
-    });
-};
-
-export const getFivedayForecast = (cityKey) => async(dispatch) => {
-    const fivedayForecast = await api.getFivedayForecast(cityKey);
-
-    dispatch({
-        type: FETCH_FORECAST,
-        payload: fivedayForecast
-    });
-};
-
-// sync actions
+// Sync actions
 export const selectCity = (cityKey) => (dispatch) => {
     dispatch({
         type: SELECT_CITY,

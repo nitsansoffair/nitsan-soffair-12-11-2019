@@ -1,7 +1,5 @@
 import {
-    FETCH_AUTOCOMPLETE,
-    FETCH_FORECAST,
-    FETCH_WEATHER,
+    FETCH_WEATHER_AND_FORECAST,
     SELECT_CITY,
     ADD_FAVORITE,
     DELETE_FAVORITE,
@@ -9,25 +7,11 @@ import {
 
 export default (state = {}, action) => {
     switch (action.type) {
-        case FETCH_AUTOCOMPLETE:
-            return {
-                ...state,
-                selectedCity: action.payload
-            };
-        case FETCH_WEATHER:
-            return {
-                ...state,
-                selectedWeather: action.payload
-            };
-        case FETCH_FORECAST:
-            return {
-                ...state,
-                fivedayForecast: action.payload
-            };
+        case FETCH_WEATHER_AND_FORECAST:
         case SELECT_CITY:
             return {
                 ...state,
-                selectedCity: action.payload
+                selectedWeather: action.payload
             };
         case ADD_FAVORITE:
         case DELETE_FAVORITE:
