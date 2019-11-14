@@ -4,18 +4,20 @@ import createBrowserHistory from '../history';
 import Header from './Header';
 import MainPage from './main/MainPage';
 import FavoritesPage from './favorites/FavoritesPage';
-// import '../style/index.scss';
+import '../style/index.scss';
 
 class App extends Component {
     render() {
         return (
             <div>
                 <Router history={createBrowserHistory}>
-                    <Switch>
-                        <Header/>
-                        <Route path="/" exact component={MainPage}/>
-                        <Route path="/favorites" exact compoent={FavoritesPage}/>
-                    </Switch>
+                    <Header/>
+                    <div className="ui container">
+                        <Switch>
+                            <Route path="/" exact component={MainPage}/>
+                            <Route path="/favorites" exact component={FavoritesPage}/>
+                        </Switch>
+                    </div>
                 </Router>
             </div>
         );
