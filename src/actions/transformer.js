@@ -1,8 +1,8 @@
-import { mean, toCelsius } from '../helpers';
+import { mean, toCelsius, getDay } from '../helpers';
 
 const weather = ({ WeatherText, Temperature: { Metric: { Value } } }) => ({
-    WeatherText,
-    temperatureValue: Value
+    weatherText: WeatherText,
+    temperatureValue: Math.round(Value)
 });
 
 const autocomplete = ({ Key, LocalizedName }) => ({
@@ -11,9 +11,9 @@ const autocomplete = ({ Key, LocalizedName }) => ({
 });
 
 const forecast = ({ Headline: { Text }, DailyForecasts }) => {
-    const daysWeather = DailyForecasts.map(({Date, Temperature: {Minimum, Maximum}, Day: {IconPhrase}}) => ({
-        Date,
-        Temperature: Math.round(toCelsius(mean(Minimum.Value, Maximum.Value))),
+    const daysWeather = DailyForecasts.map(({ Date, Temperature: { Minimum, Maximum } }) => ({
+        day: getDay(Date),
+        temperature: Math.round(toCelsius(mean(Minimum.Value, Maximum.Value))),
     }));
 
     return {

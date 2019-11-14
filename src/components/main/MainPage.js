@@ -1,11 +1,33 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchWeatherAndForecast } from '../../actions/weatherActions';
-import { getDay } from '../../helpers';
+import { fetchWeatherAndForecast, addFavorite, deleteFavorite } from '../../actions/weatherActions';
+import { mock } from '../../data/mock';
 
 class MainPage extends Component {
     state = {
         term: ''
+    };
+
+    onFavoritesClick = () => {
+        const { selectedWeather: { key, isFavorite } } = this.props;
+
+        if(isFavorite){
+            const { deleteFavorite } = this.props;
+
+            deleteFavorite(key);
+        } else {
+            const { addFavorite, selectedWeather: { name, weatherText, temperatureValue } } = this.props;
+            const favorite = {
+                id: key,
+                name,
+                currentWeather: {
+                    weatherText,
+                    temperatureValue
+                }
+            };
+
+            addFavorite(favorite);
+        }
     };
 
     onInputChange = ({ target: { value } }) => {
@@ -53,10 +75,10 @@ class MainPage extends Component {
             return (
                 <div>
                     <h1>{headline}</h1>
-                    {daysWeather.map(({Date, Temperature}, key) => (
+                    {daysWeather.map(({day, temperature}, key) => (
                         <React.Fragment key={key}>
-                            <p>{getDay(Date)}</p>
-                            <p>{Temperature}&#176; C</p>
+                            <p>{day}</p>
+                            <p>{temperature}&#176; C</p>
                         </React.Fragment>
                     ))}
                 </div>
@@ -66,18 +88,34 @@ class MainPage extends Component {
         return null;
     }
 
-    renderWeather(){
+    renderFavoritesButton(){
+        const { selectedWeather: { isFavorite } } = this.props;
+        const iconClassNames = isFavorite ? "heart outline icon" : "heart icon";
+
+        return (
+            <div>
+                <i className={iconClassNames}/>
+                <button className="ui button" onClick={this.onFavoritesClick}>
+                    {isFavorite ? "Remove From Favorites" : "Add To Favorites"}
+                </button>
+            </div>
+        );
+    }
+
+    renderContainer(){
         const { selectedWeather } = this.props;
 
         if(selectedWeather){
-            const { WeatherText, temperatureValue, LocalizedName } = selectedWeather;
+            const { temperatureValue, LocalizedName } = selectedWeather;
 
             return (
                 <div>
-                    <p>{LocalizedName}</p>
-                    <p>{WeatherText}</p>
-                    <p>{temperatureValue}&#176; C</p>
-                    {this.renderFivedayForecast()}
+                    <div>
+                        <p>{LocalizedName}</p>
+                        <p>{temperatureValue}&#176; C</p>
+                        {this.renderFavoritesButton()}
+                        {this.renderFivedayForecast()}
+                    </div>
                 </div>
             );
         }
@@ -98,17 +136,21 @@ class MainPage extends Component {
                         onChange={this.onInputChange}
                     />
                 </form>
-                {this.renderWeather()}
+                {this.renderContainer()}
             </div>
         );
     }
 }
 
 const mapStateToProps = (state) => {
-    return state;
+    // TODO - Remove mock later
+    return {
+        ...state,
+        ...mock
+    };
 };
 
 export default connect(
     mapStateToProps,
-    { fetchWeatherAndForecast }
+    { fetchWeatherAndForecast, addFavorite, deleteFavorite }
 )(MainPage);

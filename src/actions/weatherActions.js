@@ -8,18 +8,23 @@ import {
 } from './types';
 
 // Async actions
-export const fetchWeatherAndForecast = (term) => async(dispatch) => {
+export const fetchWeatherAndForecast = (term) => async(dispatch, getState) => {
     try {
+        // TODO - Add Cache here
         const { Key, LocalizedName } = await api.getAutocomplete(term);
         const weatherData = await api.getWeather(Key);
         const fivedayForecast = await api.getFivedayForecast(Key);
 
+        const { favorites = [] } = getState();
+
         dispatch({
             type: FETCH_WEATHER_AND_FORECAST,
             payload: {
+                key: Key,
                 ...transformer.weather(weatherData),
-                LocalizedName,
-                fivedayForecast
+                name: LocalizedName,
+                fivedayForecast,
+                isFavorite: !!favorites.find((favorite) => favorite.Key === Key)
             }
         });
     } catch (e) {
@@ -28,7 +33,9 @@ export const fetchWeatherAndForecast = (term) => async(dispatch) => {
 };
 
 // Sync actions
-export const selectCity = (cityKey) => (dispatch) => {
+export const selectCity = (cityKey) => (dispatch, getState) => {
+    // TODO - Save forecasts in cache
+
     dispatch({
         type: SELECT_CITY,
         payload: cityKey
@@ -36,7 +43,7 @@ export const selectCity = (cityKey) => (dispatch) => {
 };
 
 export const addFavorite = (favorite) => (dispatch, getState) => {
-    const { favorites } = getState();
+    const { favorites = [] } = getState();
 
     dispatch({
         type: ADD_FAVORITE,
