@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import '../style/header.scss';
 
 class Header extends Component {
     constructor(props) {
@@ -20,14 +21,13 @@ class Header extends Component {
     };
 
     render() {
-        // TODO - Migrate style to custom styling
         const { home, favorites } = this.links;
 
         return (
             <div>
-                <div className="ui pointing menu">
+                <div className="navbar">
                     <p>Herolo Weather Test</p>
-                    <div className="right menu">
+                    <div className="right">
                         <Link to="/" className="item active" ref={home} onClick={this.handleClick}>
                             Home
                         </Link>

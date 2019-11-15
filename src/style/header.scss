@@ -1,0 +1,26 @@
+* {
+    font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+.navbar {
+    display: flex;
+    margin: 0 20px;
+    padding: 5px 0;
+
+    a {
+        text-decoration: none;
+    }
+
+    .right {
+        margin-left: auto;
+    }
+
+    .item {
+        padding: 1rem;
+        color: black;
+
+        &.active, &:hover {
+            background: rgba(34, 46, 38, .15);
+        }
+    }
+}

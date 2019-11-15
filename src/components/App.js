@@ -3,9 +3,8 @@ import { Router, Route, Switch } from 'react-router-dom';
 import createBrowserHistory from '../history';
 import Cache from '../cache';
 import Header from './Header';
-import MainPage from './Main';
-import FavoritesPage from './Favorites';
-import '../style/index.scss';
+import Main from './Main';
+import Favorites from './Favorites';
 import { mock } from '../data/mock';
 
 class App extends Component {
@@ -33,10 +32,10 @@ class App extends Component {
             <div>
                 <Router history={createBrowserHistory}>
                     <Header/>
-                    <div className="ui container">
+                    <div className="pageContainer">
                         <Switch>
-                            <Route path="/" exact render={() => (<MainPage firstLoad={firstLoad} onFirstLoad={this.onFirstLoad} {...mock}/>)}/>
-                            <Route path="/favorites" exact render={() => (<FavoritesPage {...mock}/>)}/>
+                            <Route path="/" exact render={() => (<Main firstLoad={firstLoad} onFirstLoad={this.onFirstLoad} {...mock}/>)}/>
+                            <Route path="/favorites" exact render={() => (<Favorites {...mock}/>)}/>
                         </Switch>
                     </div>
                 </Router>

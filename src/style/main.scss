@@ -1,0 +1,65 @@
+* {
+    font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+.pageContainer {
+    width: 80vw;
+    margin: 0 auto;
+
+    h1 {
+        text-align: center;
+    }
+
+    input {
+        width: 30vw;
+        height: 30px;
+        margin: 10px 0;
+        padding: 5px;
+        border: 1px solid rgba(34, 36, 38, .15);
+        border-radius: .2rem;
+
+        &:focus {
+            outline: none;
+            border: 1px solid rgba(34, 36, 38, .30);
+        }
+    }
+
+    .smallCard {
+        width: 60px;
+    }
+
+    .buttonContainer {
+        float: right;
+
+        i {
+            margin: 5px;
+        }
+
+        .simpleButton {
+            color: rgba(0, 0, 0, .8);
+            background: rgba(255, 255, 255, 1);
+            cursor: pointer;
+            border: 1px solid rgba(34, 46, 38, .15);
+            padding: 10px;
+            border-radius: 2px;
+
+            &:hover {
+                background: rgba(34, 46, 38, .15);
+            }
+
+            &:focus {
+                outline: none;
+            }
+        }
+    }
+
+    .cardsContainer {
+        display: flex;
+        flex-wrap: wrap;
+
+        .cardItem {
+            width: 200px;
+            margin: 20px;
+        }
+    }
+}

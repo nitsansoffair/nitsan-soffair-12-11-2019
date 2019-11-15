@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchWeatherAndForecast, addFavorite, deleteFavorite } from '../actions/weatherActions';
 import translations from '../data/translations';
+import '../style/main.scss';
 
 class Main extends Component {
     state = {
@@ -85,17 +86,11 @@ class Main extends Component {
             return (
                 <>
                     <h1>{headline}</h1>
-                    <div className="ui cards">
+                    <div className="cardsContainer">
                         {daysWeather.map(({day, temperature}, key) => (
-                            <div key={key} className="card">
-                                <div className="content">
-                                    <div className="header">
-                                        {day}
-                                    </div>
-                                    <div className="meta">
-                                        {temperature}&#176; C
-                                    </div>
-                                </div>
+                            <div key={key} className="cardItem">
+                                <h3>{day}</h3>
+                                <h3>{temperature}&#176; C</h3>
                             </div>
                         ))}
                     </div>
@@ -109,12 +104,12 @@ class Main extends Component {
     renderFavoritesButton(){
         const { selectedWeather, favorites } = this.props;
         const isFavoriteWeather = isFavorite(selectedWeather, favorites);
-        const iconClassNames = isFavoriteWeather ? "heart outline icon" : "heart icon";
+        const iconClassNames = isFavoriteWeather ? "fas fa-heart" : "far fa-heart";
 
         return (
-            <div className="ui segment">
+            <div className="buttonContainer">
                 <i className={iconClassNames}/>
-                <button className="ui button" onClick={this.onFavoritesClick}>
+                <button className="simpleButton" onClick={this.onFavoritesClick}>
                     { isFavoriteWeather ? translations.main.deleteFavoritesButtonText : translations.main.addFavoritesButtonText }
                 </button>
             </div>
@@ -128,14 +123,14 @@ class Main extends Component {
             const { temperatureValue, name } = selectedWeather;
 
             return (
-                <div className="ui container">
-                    <div className="ui segment">
+                <>
+                    {this.renderFavoritesButton()}
+                    <div className="smallCard">
                         <p>{name}</p>
                         <p>{temperatureValue}&#176; C</p>
                     </div>
-                    {this.renderFavoritesButton()}
                     {this.renderFivedayForecast()}
-                </div>
+                </>
             );
         }
 
@@ -168,8 +163,8 @@ class Main extends Component {
         const { term } = this.state;
 
         return (
-            <div>
-                <form onSubmit={this.onFormSubmit} className="ui form">
+            <>
+                <form onSubmit={this.onFormSubmit} className="inputForm">
                     <input
                         type="text"
                         value={term}
@@ -179,12 +174,13 @@ class Main extends Component {
                 </form>
                 {this.renderContainer()}
                 {this.renderError()}
-            </div>
+            </>
         );
     }
 }
 
 const isFavorite = (selectedWeather, favorites = []) => {
+    // TODO - Migrate to find method
     for(let i = 0; i < favorites.length; i++){
         if(selectedWeather && selectedWeather.key.toString() === favorites[i].id.toString()){
             return true;

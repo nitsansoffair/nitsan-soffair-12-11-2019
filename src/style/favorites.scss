@@ -1,0 +1,30 @@
+* {
+    font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+.cardsContainer {
+    display: flex;
+    flex-wrap: wrap;
+
+    .cardItem {
+        width: 200px;
+        margin: 20px;
+
+        h3 {
+            margin: 10px;
+        }
+
+        a {
+            color: rgba(65, 131, 207, 1);
+            text-decoration: none;
+
+            &:hover {
+              color: rgba(65, 131, 207, .8);
+            }
+        }
+
+        .cardHeader {
+            margin-bottom: 40px;
+        }
+    }
+}
