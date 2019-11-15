@@ -179,16 +179,7 @@ class Main extends Component {
     }
 }
 
-const isFavorite = (selectedWeather, favorites = []) => {
-    // TODO - Migrate to find method
-    for(let i = 0; i < favorites.length; i++){
-        if(selectedWeather && selectedWeather.key.toString() === favorites[i].id.toString()){
-            return true;
-        }
-    }
-
-    return false;
-};
+const isFavorite = (selectedWeather, favorites = []) => selectedWeather && favorites.find(({ id }) => id === selectedWeather.key);
 
 const mapStateToProps = (state, ownProps) => {
     return {
