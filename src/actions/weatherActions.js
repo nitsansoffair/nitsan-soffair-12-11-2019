@@ -1,44 +1,38 @@
-import api from '../apis';
-import transformer from './transformer';
+import Cache from '../cache';
+import { fetchSelectedWeather } from './helpers';
 import {
     FETCH_WEATHER_AND_FORECAST,
     ADD_FAVORITE,
     DELETE_FAVORITE,
-    SELECT_CITY
+    SELECT_WEATHER
 } from './types';
 
 // Async actions
-export const fetchWeatherAndForecast = (term) => async(dispatch, getState) => {
-    try {
-        // TODO - Add Cache here
-        const { Key, LocalizedName } = await api.getAutocomplete(term);
-        const weatherData = await api.getWeather(Key);
-        const fivedayForecast = await api.getFivedayForecast(Key);
+export const fetchWeatherAndForecast = (term) => async(dispatch) => {
+    let selectedWeather = Cache.getWeather(term);
 
-        const { favorites = [] } = getState();
+    if (!selectedWeather) {
+        console.log('not cached!');
+        selectedWeather = await fetchSelectedWeather(term);
 
-        dispatch({
-            type: FETCH_WEATHER_AND_FORECAST,
-            payload: {
-                key: Key,
-                ...transformer.weather(weatherData),
-                name: LocalizedName,
-                fivedayForecast,
-                isFavorite: !!favorites.find((favorite) => favorite.Key === Key)
-            }
-        });
-    } catch (e) {
-        console.log(e);
+        selectedWeather && Cache.setWeather(term, selectedWeather);
     }
+
+    dispatch({
+        type: FETCH_WEATHER_AND_FORECAST,
+        payload: selectedWeather ? selectedWeather : {
+            error: 'Error fetch selected weather.'
+        }
+    });
 };
 
 // Sync actions
-export const selectCity = (cityKey) => (dispatch, getState) => {
-    // TODO - Save forecasts in cache
+export const selectWeather = (term) => (dispatch) => {
+    const selectedWeather = Cache.getWeather(term);
 
     dispatch({
-        type: SELECT_CITY,
-        payload: cityKey
+        type: SELECT_WEATHER,
+        payload: selectedWeather
     });
 };
 
@@ -54,9 +48,7 @@ export const addFavorite = (favorite) => (dispatch, getState) => {
     });
 };
 
-export const deleteFavorite = (favoriteId) => (dispatch, getState) => {
-    const { favorites } = getState();
-
+export const deleteFavorite = (favoriteId, favorites) => (dispatch) => {
     dispatch({
         type: DELETE_FAVORITE,
         payload: favorites.filter(({ id }) => id !== favoriteId)

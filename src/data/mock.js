@@ -1,6 +1,7 @@
 export const mock = {
     selectedWeather: {
         key: 215854,
+        term: "Tel Aviv",
         name: "Tel Aviv",
         weatherText: "Clear",
         temperatureValue: 26.8,
@@ -34,6 +35,7 @@ export const mock = {
     favorites: [
         {
             id: 215854,
+            term: "Tel Aviv",
             name: "Tel Aviv",
             currentWeather: {
                 weatherText: "Pleasant Sunday",
@@ -42,6 +44,7 @@ export const mock = {
         },
         {
             id: 215752,
+            term: "Beersheba",
             name: "Beersheba",
             currentWeather: {
                 weatherText: "Mostly clear",
@@ -50,6 +53,7 @@ export const mock = {
         },
         {
             id: 215849,
+            term: "Ramat Gan",
             name: "Ramat Gan",
             currentWeather: {
                 weatherText: "Clear",
@@ -58,6 +62,7 @@ export const mock = {
         },
         {
             id: 213181,
+            term: "Haifa",
             name: "Haifa",
             currentWeather: {
                 weatherText: "Clear",
@@ -66,6 +71,7 @@ export const mock = {
         },
         {
             id: 213225,
+            term: "Jerusalem",
             name: "Jerusalem",
             currentWeather: {
                 weatherText: "Clear",

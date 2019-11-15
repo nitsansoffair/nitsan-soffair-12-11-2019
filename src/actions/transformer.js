@@ -1,4 +1,4 @@
-import { mean, toCelsius, getDay } from '../helpers';
+import { mean, toCelsius, getDay } from './helpers';
 
 const weather = ({ WeatherText, Temperature: { Metric: { Value } } }) => ({
     weatherText: WeatherText,

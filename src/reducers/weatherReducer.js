@@ -1,6 +1,6 @@
 import {
     FETCH_WEATHER_AND_FORECAST,
-    SELECT_CITY,
+    SELECT_WEATHER,
     ADD_FAVORITE,
     DELETE_FAVORITE,
 } from '../actions/types';
@@ -8,7 +8,7 @@ import {
 export default (state = {}, action) => {
     switch (action.type) {
         case FETCH_WEATHER_AND_FORECAST:
-        case SELECT_CITY:
+        case SELECT_WEATHER:
             return {
                 ...state,
                 selectedWeather: action.payload

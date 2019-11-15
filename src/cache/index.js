@@ -7,12 +7,12 @@ class Cache {
         this.cache = new NodeCache();
     }
 
-    static getWeather(id){
-        return Cache.cache.get(id, (err, weather) => !err && weather);
+    static getWeather(term){
+        return this.cache.get(term, (err, weather) => !err && weather);
     }
 
-    static setWeather(weather){
-        return Cache.cache.set(weather.id, weather, err => !err && weather.id);
+    static setWeather(term, weather){
+        return this.cache.set(term, weather, err => !err && weather.id);
     }
 }
 

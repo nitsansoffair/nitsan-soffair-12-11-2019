@@ -1,0 +1,9 @@
+{
+  "main": {
+    "defaultTerm": "Tel Aviv",
+    "inputError": "Only english letters allowed.",
+    "inputPlaceholder": "Search city...",
+    "addFavoritesButtonText": "Add To Favorites",
+    "deleteFavoritesButtonText": "Remove From Favorites"
+  }
+}
