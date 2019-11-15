@@ -4,11 +4,13 @@
 
 .cardsContainer {
     display: flex;
-    flex-wrap: wrap;
 
     .cardItem {
         width: 200px;
         margin: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
 
         h3 {
             margin: 10px;
@@ -24,7 +26,10 @@
         }
 
         .cardHeader {
-            margin-bottom: 40px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
     }
 }

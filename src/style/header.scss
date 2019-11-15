@@ -11,6 +11,14 @@
         text-decoration: none;
     }
 
+    p {
+        margin-top: 0;
+    }
+    
+    @media (max-width: 450px) {
+        font-size: 14px;
+    }
+
     .right {
         margin-left: auto;
     }

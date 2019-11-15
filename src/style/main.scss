@@ -2,7 +2,6 @@
     font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
 }
 
-//TODO - Add FlexBox for Responsiveness
 .pageContainer {
     width: 80vw;
     margin: 0 auto;
@@ -11,22 +10,31 @@
         text-align: center;
     }
 
-    input {
-        width: 30vw;
-        height: 30px;
-        margin: 10px 0;
-        padding: 5px;
-        border: 1px solid rgba(34, 36, 38, .15);
-        border-radius: .2rem;
+    form {
+        display: flex;
+        justify-content: center;
 
-        &:focus {
-            outline: none;
-            border: 1px solid rgba(34, 36, 38, .30);
+        input {
+            width: 400px;
+            height: 30px;
+            margin: 10px 0;
+            padding: 5px;
+            border: 1px solid rgba(34, 36, 38, .15);
+            border-radius: .2rem;
+
+            &:focus {
+                outline: none;
+                border: 1px solid rgba(34, 36, 38, .30);
+            }
         }
     }
 
     .smallCard {
         width: 60px;
+
+        p {
+            margin-top: 0;
+        }
     }
 
     .buttonContainer {
