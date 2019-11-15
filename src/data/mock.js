@@ -4,29 +4,29 @@ export const mock = {
         term: "Tel Aviv",
         name: "Tel Aviv",
         weatherText: "Clear",
-        temperatureValue: 26.8,
+        temperatureValue: 26,
         isFavorite: true,
         fivedayForecast: {
             headline: "Pleasant Sunday",
             daysWeather: [
                 {
-                    day: "Thursday",
+                    day: "Thu",
                     temperature: 26
                 },
                 {
-                    day: "Friday",
+                    day: "Fri",
                     temperature: 22
                 },
                 {
-                    day: "Saturday",
+                    day: "Sat",
                     temperature: 20
                 },
                 {
-                    day: "Sunday",
+                    day: "Sun",
                     temperature: 21
                 },
                 {
-                    day: "Monday",
+                    day: "Mon",
                     temperature: 20
                 }
             ]

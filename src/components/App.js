@@ -29,17 +29,15 @@ class App extends Component {
         const { firstLoad } = this.state;
 
         return (
-            <div>
-                <Router history={createBrowserHistory}>
-                    <Header/>
-                    <div className="pageContainer">
-                        <Switch>
-                            <Route path="/" exact render={() => (<Main firstLoad={firstLoad} onFirstLoad={this.onFirstLoad} {...mock}/>)}/>
-                            <Route path="/favorites" exact render={() => (<Favorites {...mock}/>)}/>
-                        </Switch>
-                    </div>
-                </Router>
-            </div>
+            <Router history={createBrowserHistory}>
+                <Header/>
+                <div className="pageContainer">
+                    <Switch>
+                        <Route path="/" exact render={() => (<Main firstLoad={firstLoad} onFirstLoad={this.onFirstLoad} {...mock}/>)}/>
+                        <Route path="/favorites" exact render={() => (<Favorites {...mock}/>)}/>
+                    </Switch>
+                </div>
+            </Router>
         );
     }
 }

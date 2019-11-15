@@ -2,6 +2,7 @@
     font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
 }
 
+//TODO - Add FlexBox for Responsiveness
 .pageContainer {
     width: 80vw;
     margin: 0 auto;
@@ -56,10 +57,37 @@
     .cardsContainer {
         display: flex;
         flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        align-content: flex-start;
 
         .cardItem {
             width: 200px;
             margin: 20px;
+        }
+    }
+
+    .errorToast {
+        width: 250px;
+        border-radius: 4px;
+        box-shadow: rgba(49, 8, 8, 1) 1px 1px 5px;
+        background-color: rgba(177, 7, 15, 0.78);
+        padding: 10px;
+        color: rgba(241, 164, 164, 1);
+        opacity: 1;
+        animation: toast 500ms cubic-bezier(0, 0, 0, 1.5);
+    }
+
+
+    @keyframes toast {
+        0% {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0px);
         }
     }
 }

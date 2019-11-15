@@ -62,7 +62,7 @@ class Main extends Component {
     validate = () => {
         const { term } = this.state;
 
-        if(!/[a-zA-Z]+/.test(term)){
+        if(!/^[a-zA-Z]+$/.test(term)){
             this.setState({
                 inputError: translations.main.inputError
             });
@@ -76,6 +76,25 @@ class Main extends Component {
 
         return true;
     };
+
+    renderError(){
+        const { selectedWeather } = this.props;
+        let error = this.state.inputError;
+
+        if(!error && selectedWeather){
+            error = selectedWeather.error;
+        }
+
+        if(error){
+            return (
+                <div className="errorToast">
+                    {error}
+                </div>
+            );
+        }
+
+        return null;
+    }
 
     renderFivedayForecast(){
         const { selectedWeather: { fivedayForecast } } = this.props;
@@ -137,34 +156,12 @@ class Main extends Component {
         return null;
     }
 
-    renderError(){
-        const { selectedWeather } = this.props;
-        let error = this.state.inputError;
-
-        if(!error && selectedWeather){
-            error = selectedWeather.error;
-        }
-
-        if(error){
-            return (
-                <div className="ui negative message">
-                    <i className="close icon"/>
-                    <div className="header">
-                        {error}
-                    </div>
-                </div>
-            );
-        }
-
-        return null;
-    }
-
     render() {
         const { term } = this.state;
 
         return (
             <>
-                <form onSubmit={this.onFormSubmit} className="inputForm">
+                <form onSubmit={this.onFormSubmit}>
                     <input
                         type="text"
                         value={term}
@@ -172,8 +169,8 @@ class Main extends Component {
                         onChange={this.onInputChange}
                     />
                 </form>
-                {this.renderContainer()}
                 {this.renderError()}
+                {this.renderContainer()}
             </>
         );
     }

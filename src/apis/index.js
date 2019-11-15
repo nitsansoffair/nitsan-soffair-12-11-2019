@@ -61,7 +61,7 @@ const getFivedayForecast = async(cityKey) => {
         });
 
         if (status !== STATUS_OK){
-            console.log('error');
+            console.log('Error fetching five day forecast.');
         }
 
         return transformer.forecast(data);

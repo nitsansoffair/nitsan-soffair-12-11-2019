@@ -7,12 +7,11 @@ import {
     SELECT_WEATHER
 } from './types';
 
-// Async actions
 export const fetchWeatherAndForecast = (term) => async(dispatch) => {
     let selectedWeather = Cache.getWeather(term);
 
     if (!selectedWeather) {
-        console.log('not cached!');
+        console.log('fetch weather!');
         selectedWeather = await fetchSelectedWeather(term);
 
         selectedWeather && Cache.setWeather(term, selectedWeather);
@@ -26,7 +25,6 @@ export const fetchWeatherAndForecast = (term) => async(dispatch) => {
     });
 };
 
-// Sync actions
 export const selectWeather = (term) => (dispatch) => {
     const selectedWeather = Cache.getWeather(term);
 

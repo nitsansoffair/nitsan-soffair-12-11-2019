@@ -24,17 +24,15 @@ class Header extends Component {
         const { home, favorites } = this.links;
 
         return (
-            <div>
-                <div className="navbar">
-                    <p>Herolo Weather Test</p>
-                    <div className="right">
-                        <Link to="/" className="item active" ref={home} onClick={this.handleClick}>
-                            Home
-                        </Link>
-                        <Link to="/favorites" className="item" ref={favorites} onClick={this.handleClick}>
-                            Favorites
-                        </Link>
-                    </div>
+            <div className="navbar">
+                <p>Herolo Weather Test</p>
+                <div className="right">
+                    <Link to="/" className="item active" ref={home} onClick={this.handleClick}>
+                        Home
+                    </Link>
+                    <Link to="/favorites" className="item" ref={favorites} onClick={this.handleClick}>
+                        Favorites
+                    </Link>
                 </div>
             </div>
         );
