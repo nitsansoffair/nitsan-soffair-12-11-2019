@@ -2,6 +2,11 @@
     font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
 }
 
+.darkContainer {
+    background: black;
+    color: white;
+}
+
 .pageContainer {
     width: 80vw;
     margin: 0 auto;
@@ -42,6 +47,24 @@
 
         i {
             margin: 5px;
+        }
+
+        .darkButton {
+            background: rgba(0, 0, 0, .8);
+            color: rgba(255, 255, 255, 1);
+            cursor: pointer;
+            border: 1px solid rgba(34, 46, 38, .15);
+            padding: 10px;
+            border-radius: 2px;
+
+            &:hover {
+                background: rgba(255, 255, 255, 1);
+                color: rgba(0, 0, 0, .8);
+            }
+
+            &:focus {
+                outline: none;
+            }
         }
 
         .simpleButton {

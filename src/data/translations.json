@@ -5,5 +5,9 @@
     "inputPlaceholder": "Search city...",
     "addFavoritesButtonText": "Add To Favorites",
     "deleteFavoritesButtonText": "Remove From Favorites"
+  },
+  "header": {
+    "themeButtonDark": "Dark",
+    "themeButtonLight": "Light"
   }
 }

@@ -64,7 +64,7 @@ class Main extends Component {
     validate = () => {
         const { term } = this.state;
 
-        if(!/^[a-zA-Z]+$/.test(term)){
+        if(!/^[a-zA-Z\s]+$/.test(term)){
             this.setState({
                 inputError: translations.main.inputError
             });
@@ -123,14 +123,15 @@ class Main extends Component {
     }
 
     renderFavoritesButton(){
-        const { selectedWeather, favorites } = this.props;
+        const { selectedWeather, favorites, isLight } = this.props;
         const isFavoriteWeather = isFavorite(selectedWeather, favorites);
-        const iconClassNames = isFavoriteWeather ? "fas fa-heart" : "far fa-heart";
+        const iconClasses = isFavoriteWeather ? "fas fa-heart" : "far fa-heart";
+        const buttonClasses = isLight ? "simpleButton" : "darkButton";
 
         return (
             <div className="buttonContainer">
-                <i className={iconClassNames}/>
-                <button className="simpleButton" onClick={this.onFavoritesClick}>
+                <i className={iconClasses}/>
+                <button className={buttonClasses} onClick={this.onFavoritesClick}>
                     { isFavoriteWeather ? translations.main.deleteFavoritesButtonText : translations.main.addFavoritesButtonText }
                 </button>
             </div>

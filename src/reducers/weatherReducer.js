@@ -4,9 +4,17 @@ import {
     SELECT_WEATHER,
     ADD_FAVORITE,
     DELETE_FAVORITE,
+    TOGGLE_THEME
 } from '../actions/types';
+import { mock } from '../data/mock';
 
-export default (state = {}, action) => {
+// TODO - Remove mock later
+const defaultState = {
+    isLight: true,
+    ...mock
+};
+
+export default (state = defaultState, action) => {
     switch (action.type) {
         case FETCH_WEATHER_AND_FORECAST:
         case FETCH_CURRENT_WEATHER:
@@ -20,6 +28,11 @@ export default (state = {}, action) => {
             return {
                 ...state,
                 favorites: action.payload
+            };
+        case TOGGLE_THEME:
+            return {
+                ...state,
+                isLight: action.payload
             };
         default:
             return state;

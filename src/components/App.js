@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Router, Route, Switch } from 'react-router-dom';
 import createBrowserHistory from '../history';
 import Cache from '../cache';
 import Header from './Header';
 import Main from './Main';
 import Favorites from './Favorites';
-import { mock } from '../data/mock';
 
 class App extends Component {
     constructor(props){
@@ -27,19 +27,28 @@ class App extends Component {
 
     render() {
         const { firstLoad } = this.state;
+        const { isLight } = this.props;
+        const containerClasses = isLight ? "pageContainer" : "pageContainer darkContainer";
 
         return (
-            <Router history={createBrowserHistory}>
-                <Header/>
-                <div className="pageContainer">
+            <div className={containerClasses}>
+                <Router history={createBrowserHistory}>
+                    <Header/>
                     <Switch>
-                        <Route path="/" exact render={() => (<Main firstLoad={firstLoad} onFirstLoad={this.onFirstLoad} {...mock}/>)}/>
-                        <Route path="/favorites" exact render={() => (<Favorites {...mock}/>)}/>
+                        <Route path="/" exact render={() => (<Main firstLoad={firstLoad} onFirstLoad={this.onFirstLoad}/>)}/>
+                        <Route path="/favorites" exact render={() => (<Favorites/>)}/>
                     </Switch>
-                </div>
-            </Router>
+                </Router>
+            </div>
         );
     }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+    return state;
+};
+
+export default connect(
+    mapStateToProps,
+    {  }
+)(App);

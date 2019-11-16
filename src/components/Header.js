@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { toggleTheme } from '../actions/weatherActions';
 import { Link } from 'react-router-dom';
+import translations from '../data/translations';
 import '../style/header.scss';
 
 class Header extends Component {
@@ -20,17 +23,29 @@ class Header extends Component {
         target.classList.add('active');
     };
 
+    handleToggleTheme = () => {
+        const { isLight, toggleTheme } = this.props;
+
+        toggleTheme(isLight);
+    };
+
     render() {
         const { home, favorites } = this.links;
+        const { isLight } = this.props;
+        const itemClasses = isLight ? "item" : "darkItem";
+        const buttonClasses = isLight ? "themeButton light" : "themeButton dark";
 
         return (
             <div className="navbar">
                 <p>Herolo Weather Test</p>
+                <button className={buttonClasses} onClick={this.handleToggleTheme}>
+                    {isLight ? translations.header.themeButtonDark : translations.header.themeButtonLight}
+                </button>
                 <div className="right">
-                    <Link to="/" className="item active" ref={home} onClick={this.handleClick}>
+                    <Link to="/" className={`${itemClasses} active`} ref={home} onClick={this.handleClick}>
                         Home
                     </Link>
-                    <Link to="/favorites" className="item" ref={favorites} onClick={this.handleClick}>
+                    <Link to="/favorites" className={itemClasses} ref={favorites} onClick={this.handleClick}>
                         Favorites
                     </Link>
                 </div>
@@ -39,4 +54,11 @@ class Header extends Component {
     }
 }
 
-export default Header;
+const mapStateToProps = (state) => {
+    return state;
+};
+
+export default connect(
+    mapStateToProps,
+    { toggleTheme }
+)(Header);
