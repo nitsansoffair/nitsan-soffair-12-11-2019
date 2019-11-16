@@ -1,13 +1,14 @@
 import axios from 'axios';
+import transformer from '../actions/transformer';
 import {
-    AUTOCOMPLETE_URL,
     BASE_URL,
+    AUTOCOMPLETE_URL,
+    GEOPOSITION_URL,
     CONDITIONS_URL,
     FORECAST_URL,
     STATUS_OK,
     API_KEY
 } from './constants';
-import transformer from "../actions/transformer";
 
 const weather = axios.create({
     baseURL: BASE_URL
@@ -27,8 +28,27 @@ const getAutocomplete = async(q) => {
             console.log('error');
         }
 
-        // Will send the first element by default
-        return transformer.autocomplete(data[0]);
+        return transformer.keyAndCity(data[0]);
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+const getGeoposition = async(q) => {
+    try {
+        console.log(q);
+        const { status, data } = await weather.get(GEOPOSITION_URL, {
+            params: {
+                apikey: API_KEY,
+                q
+            }
+        });
+
+        if (status !== STATUS_OK){
+            console.log('error');
+        }
+
+        return transformer.keyAndCity(data);
     } catch (e) {
         console.log(e);
     }
@@ -72,6 +92,7 @@ const getFivedayForecast = async(cityKey) => {
 
 const api = {
     getAutocomplete,
+    getGeoposition,
     getWeather,
     getFivedayForecast
 };

@@ -1,7 +1,8 @@
 import Cache from '../cache';
-import { fetchSelectedWeather } from './helpers';
+import { fetchSelectedWeather, fetchCurrentWeather } from './helpers';
 import {
     FETCH_WEATHER_AND_FORECAST,
+    FETCH_CURRENT_WEATHER,
     ADD_FAVORITE,
     DELETE_FAVORITE,
     SELECT_WEATHER
@@ -21,6 +22,19 @@ export const fetchWeatherAndForecast = (term) => async(dispatch) => {
         type: FETCH_WEATHER_AND_FORECAST,
         payload: selectedWeather ? selectedWeather : {
             error: 'Error fetch selected weather.'
+        }
+    });
+};
+
+export const fetchWeatherByGeoposition = (q) => async(dispatch) => {
+    const currentWeather = await fetchCurrentWeather(q);
+
+    currentWeather && Cache.setWeather(currentWeather.term, currentWeather);
+
+    dispatch({
+        type: FETCH_CURRENT_WEATHER,
+        payload: currentWeather ? currentWeather : {
+            error: 'Error fetch current weather.'
         }
     });
 };

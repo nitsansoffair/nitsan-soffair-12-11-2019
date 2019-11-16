@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchWeatherAndForecast, addFavorite, deleteFavorite } from '../actions/weatherActions';
+import { fetchWeatherAndForecast, fetchWeatherByGeoposition, addFavorite, deleteFavorite } from '../actions/weatherActions';
 import translations from '../data/translations';
 import '../style/main.scss';
 
@@ -10,10 +10,12 @@ class Main extends Component {
     };
 
     componentDidMount() {
-        const { fetchWeatherAndForecast, firstLoad, onFirstLoad } = this.props;
+        const { fetchWeatherByGeoposition, firstLoad, onFirstLoad } = this.props;
 
         if(firstLoad){
-            fetchWeatherAndForecast(translations.main.defaultTerm);
+            navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
+                fetchWeatherByGeoposition(`${latitude},${longitude}`);
+            });
 
             onFirstLoad();
         }
@@ -187,5 +189,5 @@ const mapStateToProps = (state, ownProps) => {
 
 export default connect(
     mapStateToProps,
-    { fetchWeatherAndForecast, addFavorite, deleteFavorite }
+    { fetchWeatherAndForecast, fetchWeatherByGeoposition, addFavorite, deleteFavorite }
 )(Main);

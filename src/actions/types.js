@@ -1,5 +1,6 @@
 // Async actions
 export const FETCH_WEATHER_AND_FORECAST = 'FETCH_WEATHER_AND_FORECAST';
+export const FETCH_CURRENT_WEATHER = 'FETCH_CURRENT_WEATHER';
 
 // Sync actions
 export const ADD_FAVORITE = 'ADD_FAVORITE';

@@ -5,7 +5,7 @@ const weather = ({ WeatherText, Temperature: { Metric: { Value } } }) => ({
     temperatureValue: Math.round(Value)
 });
 
-const autocomplete = ({ Key, LocalizedName }) => ({
+const keyAndCity = ({ Key, LocalizedName }) => ({
     Key,
     LocalizedName
 });
@@ -24,7 +24,7 @@ const forecast = ({ Headline: { Text }, DailyForecasts }) => {
 
 const transformer = {
     weather,
-    autocomplete,
+    keyAndCity,
     forecast
 };
 

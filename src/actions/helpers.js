@@ -26,3 +26,22 @@ export const fetchSelectedWeather = async(term) => {
         return null;
     }
 };
+
+export const fetchCurrentWeather = async(q) => {
+    try {
+        const { Key, LocalizedName } = await api.getGeoposition(q);
+        const [weatherData, fivedayForecast] = await Promise.all([api.getWeather(Key) ,api.getFivedayForecast(Key)]);
+
+        return {
+            key: Key,
+            term: LocalizedName,
+            ...transformer.weather(weatherData),
+            name: LocalizedName,
+            fivedayForecast
+        };
+    } catch (e) {
+        console.log(e);
+
+        return null;
+    }
+};
