@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchWeatherAndForecast, fetchWeatherByGeoposition, addFavorite, deleteFavorite } from '../actions/weatherActions';
+import { toFahrenheit } from '../actions/helpers';
 import translations from '../data/translations';
 import '../style/main.scss';
 
@@ -99,7 +100,8 @@ class Main extends Component {
     }
 
     renderFivedayForecast(){
-        const { selectedWeather: { fivedayForecast } } = this.props;
+        const { selectedWeather: { fivedayForecast }, isCelsius } = this.props;
+        const temperatureChar = isCelsius ? translations.main.celsiusChar : translations.main.fahrenheitChar;
 
         if(fivedayForecast){
             const { headline, daysWeather } = fivedayForecast;
@@ -111,7 +113,7 @@ class Main extends Component {
                         {daysWeather.map(({day, temperature}, key) => (
                             <div key={key} className="cardItem">
                                 <h3>{day}</h3>
-                                <h3>{temperature}&#176; C</h3>
+                                <h3>{isCelsius ? temperature : toFahrenheit(temperature)}&#176; {temperatureChar}</h3>
                             </div>
                         ))}
                     </div>

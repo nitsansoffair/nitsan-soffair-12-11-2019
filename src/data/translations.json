@@ -4,10 +4,14 @@
     "inputError": "Only english letters allowed.",
     "inputPlaceholder": "Search city...",
     "addFavoritesButtonText": "Add To Favorites",
-    "deleteFavoritesButtonText": "Remove From Favorites"
+    "deleteFavoritesButtonText": "Remove From Favorites",
+    "fahrenheitChar": "F",
+    "celsiusChar": "C"
   },
   "header": {
     "themeButtonDark": "Dark",
-    "themeButtonLight": "Light"
+    "themeButtonLight": "Light",
+    "temperatureButtonFahrenheit": "Fahrenheit",
+    "temperatureButtonCelsius": "Celsius"
   }
 }

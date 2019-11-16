@@ -6,7 +6,8 @@ import {
     ADD_FAVORITE,
     DELETE_FAVORITE,
     SELECT_WEATHER,
-    TOGGLE_THEME
+    TOGGLE_THEME,
+    TOGGLE_TEMPERATURE
 } from './types';
 
 export const fetchWeatherAndForecast = (term) => async(dispatch) => {
@@ -72,5 +73,12 @@ export const toggleTheme = (isLight) => (dispatch) => {
     dispatch({
         type: TOGGLE_THEME,
         payload: !isLight
+    });
+};
+
+export const toggleTemperature = (isCelsius) => (dispatch) => {
+    dispatch({
+        type: TOGGLE_TEMPERATURE,
+        payload: !isCelsius
     });
 };

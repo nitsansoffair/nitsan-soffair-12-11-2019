@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { toggleTheme } from '../actions/weatherActions';
+import { toggleTheme, toggleTemperature } from '../actions/weatherActions';
 import { Link } from 'react-router-dom';
 import translations from '../data/translations';
 import '../style/header.scss';
@@ -29,17 +29,26 @@ class Header extends Component {
         toggleTheme(isLight);
     };
 
+    handleToggleTemperature = () => {
+        const { isCelsius, toggleTemperature } = this.props;
+
+        toggleTemperature(isCelsius);
+    };
+
     render() {
         const { home, favorites } = this.links;
-        const { isLight } = this.props;
+        const { isLight, isCelsius } = this.props;
         const itemClasses = isLight ? "item" : "darkItem";
-        const buttonClasses = isLight ? "themeButton light" : "themeButton dark";
+        const buttonClasses = isLight ? "toggleButton light" : "toggleButton dark";
 
         return (
             <div className="navbar">
                 <p>Herolo Weather Test</p>
                 <button className={buttonClasses} onClick={this.handleToggleTheme}>
                     {isLight ? translations.header.themeButtonDark : translations.header.themeButtonLight}
+                </button>
+                <button className="toggleButton" onClick={this.handleToggleTemperature}>
+                    {isCelsius ? translations.header.temperatureButtonFahrenheit : translations.header.temperatureButtonCelsius}
                 </button>
                 <div className="right">
                     <Link to="/" className={`${itemClasses} active`} ref={home} onClick={this.handleClick}>
@@ -60,5 +69,5 @@ const mapStateToProps = (state) => {
 
 export default connect(
     mapStateToProps,
-    { toggleTheme }
+    { toggleTheme, toggleTemperature }
 )(Header);

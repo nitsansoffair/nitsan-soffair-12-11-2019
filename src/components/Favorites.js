@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { selectWeather } from '../actions/weatherActions';
 import { Link } from 'react-router-dom';
+import { toFahrenheit } from '../actions/helpers';
+import translations from '../data/translations';
 import '../style/favorites.scss';
 
 class Favorites extends Component {
@@ -12,7 +14,8 @@ class Favorites extends Component {
     };
 
     render() {
-        const { favorites = [] } = this.props;
+        const { favorites = [], isCelsius } = this.props;
+        const temperatureChar = isCelsius ? translations.main.celsiusChar : translations.main.fahrenheitChar;
 
         return (
             <div className="cardsContainer">
@@ -22,7 +25,7 @@ class Favorites extends Component {
                             <Link to="/" onClick={() => this.handleFavorite(term)}>
                                 <h3>{name}</h3>
                             </Link>
-                            <h3>{temperatureValue}&#176; C</h3>
+                            <h3>{isCelsius ? temperatureValue : toFahrenheit(temperatureValue)}&#176; {temperatureChar}</h3>
                         </div>
                         <h3>{weatherText}</h3>
                     </div>

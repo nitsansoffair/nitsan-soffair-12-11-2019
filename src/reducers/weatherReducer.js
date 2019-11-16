@@ -4,13 +4,15 @@ import {
     SELECT_WEATHER,
     ADD_FAVORITE,
     DELETE_FAVORITE,
-    TOGGLE_THEME
+    TOGGLE_THEME,
+    TOGGLE_TEMPERATURE
 } from '../actions/types';
 import { mock } from '../data/mock';
 
 // TODO - Remove mock later
 const defaultState = {
     isLight: true,
+    isCelsius: true,
     ...mock
 };
 
@@ -33,6 +35,11 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 isLight: action.payload
+            };
+        case TOGGLE_TEMPERATURE:
+            return {
+                ...state,
+                isCelsius: action.payload
             };
         default:
             return state;
