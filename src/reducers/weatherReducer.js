@@ -1,8 +1,9 @@
 import {
     FETCH_WEATHER_AND_FORECAST,
+    FETCH_CURRENT_WEATHER,
     SELECT_WEATHER,
     ADD_FAVORITE,
-    DELETE_FAVORITE, FETCH_CURRENT_WEATHER,
+    DELETE_FAVORITE,
 } from '../actions/types';
 
 export default (state = {}, action) => {
