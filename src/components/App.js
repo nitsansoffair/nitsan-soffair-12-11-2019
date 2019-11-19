@@ -2,21 +2,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Router, Route, Switch } from 'react-router-dom';
 import createBrowserHistory from '../history';
-import Cache from '../cache';
 import Header from './Header';
 import Main from './Main';
 import Favorites from './Favorites';
+import componentsHelpers from "./helpers";
 
 class App extends Component {
     constructor(props){
         super(props);
 
-        // TODO - Change to true and remove mock later
         this.state = {
-            firstLoad: false
+            firstLoad: false // TODO - Change to true and remove mock later
         };
-
-        Cache.init();
     }
 
     onFirstLoad = () => {
@@ -28,7 +25,8 @@ class App extends Component {
     render() {
         const { firstLoad } = this.state;
         const { isLight } = this.props;
-        const containerClasses = isLight ? "pageContainer" : "pageContainer darkContainer";
+
+        const containerClasses = componentsHelpers.getContainerClass(isLight);
 
         return (
             <div className={containerClasses}>

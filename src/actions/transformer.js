@@ -1,4 +1,4 @@
-import { mean, toCelsius, getDay } from './helpers';
+import actionHelpers from './helpers';
 
 const weather = ({ WeatherText, Temperature: { Metric: { Value } } }) => ({
     weatherText: WeatherText,
@@ -12,8 +12,8 @@ const keyAndCity = ({ Key, LocalizedName }) => ({
 
 const forecast = ({ Headline: { Text }, DailyForecasts }) => {
     const daysWeather = DailyForecasts.map(({ Date, Temperature: { Minimum, Maximum } }) => ({
-        day: getDay(Date),
-        temperature: Math.round(toCelsius(mean(Minimum.Value, Maximum.Value))),
+        day: actionHelpers.getDay(Date),
+        temperature: Math.round(actionHelpers.toCelsius(actionHelpers.mean(Minimum.Value, Maximum.Value))),
     }));
 
     return {
@@ -22,10 +22,13 @@ const forecast = ({ Headline: { Text }, DailyForecasts }) => {
     };
 };
 
+const geoPositionParams = ({ latitude, longitude }) => `${latitude},${longitude}`;
+
 const transformer = {
     weather,
     keyAndCity,
-    forecast
+    forecast,
+    geoPositionParams
 };
 
 export default transformer;

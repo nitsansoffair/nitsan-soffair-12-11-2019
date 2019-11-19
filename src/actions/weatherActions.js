@@ -1,5 +1,5 @@
-import Cache from '../cache';
-import { fetchSelectedWeather, fetchCurrentWeather } from './helpers';
+import CacheInstance from '../cache';
+import actionHelpers from './helpers';
 import {
     FETCH_WEATHER_AND_FORECAST,
     FETCH_CURRENT_WEATHER,
@@ -9,44 +9,38 @@ import {
     TOGGLE_THEME,
     TOGGLE_TEMPERATURE
 } from './types';
+import errorMessages from '../data/errorMessages';
 
 export const fetchWeatherAndForecast = (term) => async(dispatch) => {
-    let selectedWeather = Cache.getWeather(term);
+    let selectedWeather = CacheInstance.getWeather(term);
 
     if (!selectedWeather) {
-        console.log('fetch weather!');
-        selectedWeather = await fetchSelectedWeather(term);
+        selectedWeather = await actionHelpers.fetchSelectedWeather(term);
 
-        selectedWeather && Cache.setWeather(term, selectedWeather);
+        selectedWeather && !CacheInstance.setWeather(term, selectedWeather) && console.log(errorMessages.cache.setError('fetchWeatherAndForecast'));
     }
 
     dispatch({
         type: FETCH_WEATHER_AND_FORECAST,
-        payload: selectedWeather ? selectedWeather : {
-            error: 'Error fetch selected weather.'
-        }
+        payload: selectedWeather
     });
 };
 
 export const fetchWeatherByGeoposition = (q) => async(dispatch) => {
-    const currentWeather = await fetchCurrentWeather(q);
+    const currentWeather = await actionHelpers.fetchCurrentWeather(q);
 
-    currentWeather && Cache.setWeather(currentWeather.term, currentWeather);
+    currentWeather && !CacheInstance.setWeather(currentWeather.term, currentWeather) && console.log(errorMessages.cache.setError('fetchWeatherByGeoposition'));
 
     dispatch({
         type: FETCH_CURRENT_WEATHER,
-        payload: currentWeather ? currentWeather : {
-            error: 'Error fetch current weather.'
-        }
+        payload: currentWeather
     });
 };
 
 export const selectWeather = (term) => (dispatch) => {
-    const selectedWeather = Cache.getWeather(term);
-
     dispatch({
         type: SELECT_WEATHER,
-        payload: selectedWeather
+        payload: CacheInstance.getWeather(term)
     });
 };
 
@@ -62,21 +56,27 @@ export const addFavorite = (favorite) => (dispatch, getState) => {
     });
 };
 
-export const deleteFavorite = (favoriteId, favorites) => (dispatch) => {
+export const deleteFavorite = (favoriteId) => (dispatch, getState) => {
+    const { favorites = [] } = getState();
+
     dispatch({
         type: DELETE_FAVORITE,
         payload: favorites.filter(({ id }) => id !== favoriteId)
     });
 };
 
-export const toggleTheme = (isLight) => (dispatch) => {
+export const toggleTheme = () => (dispatch, getState) => {
+    const { isLight } = getState();
+
     dispatch({
         type: TOGGLE_THEME,
         payload: !isLight
     });
 };
 
-export const toggleTemperature = (isCelsius) => (dispatch) => {
+export const toggleTemperature = () => (dispatch, getState) => {
+    const { isCelsius } = getState();
+
     dispatch({
         type: TOGGLE_TEMPERATURE,
         payload: !isCelsius

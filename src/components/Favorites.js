@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { selectWeather } from '../actions/weatherActions';
 import { Link } from 'react-router-dom';
-import { toFahrenheit } from '../actions/helpers';
-import translations from '../data/translations';
+import componentsHelpers from './helpers';
 import '../style/favorites.scss';
 
 class Favorites extends Component {
@@ -14,18 +13,20 @@ class Favorites extends Component {
     };
 
     render() {
-        const { favorites = [], isCelsius } = this.props;
-        const temperatureChar = isCelsius ? translations.main.celsiusChar : translations.main.fahrenheitChar;
+        const { favorites, isCelsius, isLight } = this.props;
+
+        const temperatureChar = componentsHelpers.getTemperatureChar(isCelsius);
+        const cardClasses = componentsHelpers.getCardClass(isLight);
 
         return (
             <div className="cardsContainer">
                 {favorites.map(({ id, term, name, currentWeather: { weatherText, temperatureValue } }) => (
-                    <div key={id} className="cardItem">
+                    <div key={id} className={cardClasses}>
                         <div className="cardHeader">
                             <Link to="/" onClick={() => this.handleFavorite(term)}>
                                 <h3>{name}</h3>
                             </Link>
-                            <h3>{isCelsius ? temperatureValue : toFahrenheit(temperatureValue)}&#176; {temperatureChar}</h3>
+                            <h3>{componentsHelpers.getTemperature(isCelsius, temperatureValue)}&#176; {temperatureChar}</h3>
                         </div>
                         <h3>{weatherText}</h3>
                     </div>
@@ -35,10 +36,12 @@ class Favorites extends Component {
     }
 }
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = ({ selectWeather, favorites = [], isCelsius, isLight }) => {
     return {
-        ...ownProps,
-        ...state
+        selectWeather,
+        favorites,
+        isCelsius,
+        isLight
     };
 };
 

@@ -1,16 +1,15 @@
 import api from '../apis';
 import transformer from './transformer';
 import { days } from '../data/days';
+import errorMessages from '../data/errorMessages';
 
-export const mean = (n1, n2) => (n1 + n2) / 2;
+const mean = (n1, n2) => (n1 + n2) / 2;
 
-export const toCelsius = (fahrenheit) => (fahrenheit - 32) * 5/9;
+const toCelsius = (fahrenheit) => (fahrenheit - 32) * 5/9;
 
-export const toFahrenheit = (celsius) => (celsius * 9/5) + 32;
+const getDay = (string) => days[new Date(string).getDay()];
 
-export const getDay = (string) => days[new Date(string).getDay()];
-
-export const fetchSelectedWeather = async(term) => {
+const fetchSelectedWeather = async(term) => {
     try {
         const { Key, LocalizedName } = await api.getAutocomplete(term);
         const [weatherData, fivedayForecast] = await Promise.all([api.getWeather(Key) ,api.getFivedayForecast(Key)]);
@@ -23,13 +22,13 @@ export const fetchSelectedWeather = async(term) => {
             fivedayForecast
         };
     } catch (e) {
-        console.log(e);
-
-        return null;
+        return {
+            error: errorMessages.api.fetch_weather('fetchSelectedWeather')
+        };
     }
 };
 
-export const fetchCurrentWeather = async(q) => {
+const fetchCurrentWeather = async(q) => {
     try {
         const { Key, LocalizedName } = await api.getGeoposition(q);
         const [weatherData, fivedayForecast] = await Promise.all([api.getWeather(Key) ,api.getFivedayForecast(Key)]);
@@ -42,8 +41,18 @@ export const fetchCurrentWeather = async(q) => {
             fivedayForecast
         };
     } catch (e) {
-        console.log(e);
-
-        return null;
+        return {
+            error: errorMessages.api.fetch_geoposition('fetchCurrentWeather')
+        };
     }
 };
+
+const actionHelpers = {
+    mean,
+    toCelsius,
+    getDay,
+    fetchSelectedWeather,
+    fetchCurrentWeather
+};
+
+export default actionHelpers;

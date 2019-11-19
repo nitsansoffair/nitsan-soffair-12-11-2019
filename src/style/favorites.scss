@@ -1,7 +1,4 @@
-* {
-    font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
-}
-
+//TODO - Improve list design
 .cardsContainer {
     display: flex;
 
@@ -17,11 +14,18 @@
         }
 
         a {
-            color: rgba(65, 131, 207, 1);
+            color: black;
             text-decoration: none;
 
             &:hover {
-              color: rgba(65, 131, 207, .8);
+              text-decoration: underline;
+            }
+        }
+
+        //TODO - Add same animation here
+        &.dark {
+            a {
+                color: white;
             }
         }
 

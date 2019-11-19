@@ -1,19 +1,23 @@
 import NodeCache from 'node-cache';
+import{ DEFAULT_TTL } from './constants';
 
 class Cache {
-    static cache;
-
-    static init(){
-        this.cache = new NodeCache();
+    constructor(){
+        this.cache = new NodeCache({
+            stdTTL: DEFAULT_TTL,
+            useClones: false
+        });
     }
 
-    static getWeather(term){
-        return this.cache.get(term, (err, weather) => !err && weather);
+    getWeather(term){
+        return this.cache.get(term);
     }
 
-    static setWeather(term, weather){
-        return this.cache.set(term, weather, err => !err && weather.id);
+    setWeather(term, weather){
+        return this.cache.set(term, weather);
     }
 }
 
-export default Cache;
+const CacheInstance = new Cache();
+
+export default CacheInstance;

@@ -3,29 +3,40 @@
 }
 
 .navbar {
-    display: flex;
+    height: 50px;
     margin: 0 20px;
+    display: flex;
     align-items: center;
+    justify-content: center;
+    font-size: 16px;
 
     a {
         text-decoration: none;
     }
 
     p {
-        margin: 0;
+        padding: 5px;
     }
-    
-    @media (max-width: 450px) {
-        font-size: 14px;
+
+    @media (max-width: 650px) {
+        font-size: 12px;
     }
 
     .toggleButton {
         width: 80px;
-        cursor: pointer;
-        border: none;
         margin: 0 10px;
         padding: 8px;
+        cursor: pointer;
+        border: none;
         border-radius: 2px;
+
+        &:focus {
+            outline: none;
+        }
+
+        &:hover {
+            color: rgba(0, 0, 0, .7);
+        }
 
         &.dark {
             background: rgba(255, 255, 255, 1);;
@@ -35,14 +46,10 @@
         &.light {
             background: rgba(0, 0, 0, 1);
             color: rgba(255, 255, 255, 1);
-        }
 
-        &:hover {
-            font-weight: 700;
-        }
-
-        &:focus {
-            outline: none;
+            &:hover {
+                color: rgba(255, 255, 255, .7);
+            }
         }
     }
 
@@ -50,22 +57,28 @@
         margin-left: auto;
     }
 
-    .darkItem {
-        padding: 1rem;
-        color: white;
-
-        &.active, &:hover {
-            background: white;
-            color: black;
-        }
-    }
-
     .item {
         padding: 1rem;
-        color: black;
 
-        &.active, &:hover {
-            background: rgba(34, 46, 38, .15);
+        @media (max-width: 650px) {
+            padding: 1.1rem;
+        }
+
+        &.light {
+            color: black;
+
+            &.active, &:hover {
+                background: rgba(34, 46, 38, .15);
+            }
+        }
+
+        &.dark {
+            color: white;
+
+            &.active, &:hover {
+                color: black;
+                background: white;
+            }
         }
     }
 }

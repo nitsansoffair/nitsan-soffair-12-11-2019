@@ -1,6 +1,6 @@
 {
   "main": {
-    "defaultTerm": "Tel Aviv",
+    "defaultTerm": "",
     "inputError": "Only english letters allowed.",
     "inputPlaceholder": "Search city...",
     "addFavoritesButtonText": "Add To Favorites",
@@ -12,6 +12,8 @@
     "themeButtonDark": "Dark",
     "themeButtonLight": "Light",
     "temperatureButtonFahrenheit": "Fahrenheit",
-    "temperatureButtonCelsius": "Celsius"
+    "temperatureButtonCelsius": "Celsius",
+    "mainLinkText": "Home",
+    "favoritesLinkText": "Favorites"
   }
 }

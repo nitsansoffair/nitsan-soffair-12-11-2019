@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchWeatherAndForecast, fetchWeatherByGeoposition, addFavorite, deleteFavorite } from '../actions/weatherActions';
-import { toFahrenheit } from '../actions/helpers';
+import transformer from '../actions/transformer';
+import componentsHelpers from './helpers';
 import translations from '../data/translations';
 import '../style/main.scss';
 
 class Main extends Component {
     state = {
-        term: ''
+        term: translations.main.defaultTerm
     };
 
     componentDidMount() {
         const { fetchWeatherByGeoposition, firstLoad, onFirstLoad } = this.props;
 
         if(firstLoad){
-            navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
-                fetchWeatherByGeoposition(`${latitude},${longitude}`);
+            navigator.geolocation.getCurrentPosition(({ coords }) => {
+                fetchWeatherByGeoposition(transformer.geoPositionParams(coords));
             });
 
             onFirstLoad();
@@ -25,10 +26,10 @@ class Main extends Component {
     onFavoritesClick = () => {
         const { selectedWeather, favorites } = this.props;
 
-        if(isFavorite(selectedWeather, favorites)){
+        if(componentsHelpers.isFavorite(selectedWeather, favorites)){
             const { deleteFavorite, selectedWeather: { key } } = this.props;
 
-            deleteFavorite(key, favorites);
+            deleteFavorite(key);
         } else {
             const { addFavorite, selectedWeather: { term, name, weatherText, temperatureValue, key } } = this.props;
             const favorite = {
@@ -65,7 +66,7 @@ class Main extends Component {
     validate = () => {
         const { term } = this.state;
 
-        if(!/^[a-zA-Z\s]+$/.test(term)){
+        if(!componentsHelpers.validateInput(term)){
             this.setState({
                 inputError: translations.main.inputError
             });
@@ -101,7 +102,7 @@ class Main extends Component {
 
     renderFivedayForecast(){
         const { selectedWeather: { fivedayForecast }, isCelsius } = this.props;
-        const temperatureChar = isCelsius ? translations.main.celsiusChar : translations.main.fahrenheitChar;
+        const temperatureChar = componentsHelpers.getTemperatureChar(isCelsius);
 
         if(fivedayForecast){
             const { headline, daysWeather } = fivedayForecast;
@@ -113,7 +114,7 @@ class Main extends Component {
                         {daysWeather.map(({day, temperature}, key) => (
                             <div key={key} className="cardItem">
                                 <h3>{day}</h3>
-                                <h3>{isCelsius ? temperature : toFahrenheit(temperature)}&#176; {temperatureChar}</h3>
+                                <h3>{componentsHelpers.getTemperature(isCelsius, temperature)}&#176; {temperatureChar}</h3>
                             </div>
                         ))}
                     </div>
@@ -126,15 +127,15 @@ class Main extends Component {
 
     renderFavoritesButton(){
         const { selectedWeather, favorites, isLight } = this.props;
-        const isFavoriteWeather = isFavorite(selectedWeather, favorites);
-        const iconClasses = isFavoriteWeather ? "fas fa-heart" : "far fa-heart";
-        const buttonClasses = isLight ? "simpleButton" : "darkButton";
+
+        const isFavorite = componentsHelpers.isFavorite(selectedWeather, favorites);
+        const [iconClasses, buttonClasses] = componentsHelpers.getFavoritesClasses({ favorites, isLight });
 
         return (
             <div className="buttonContainer">
                 <i className={iconClasses}/>
                 <button className={buttonClasses} onClick={this.onFavoritesClick}>
-                    { isFavoriteWeather ? translations.main.deleteFavoritesButtonText : translations.main.addFavoritesButtonText }
+                    { isFavorite ? translations.main.deleteFavoritesButtonText : translations.main.addFavoritesButtonText }
                 </button>
             </div>
         );
@@ -181,14 +182,7 @@ class Main extends Component {
     }
 }
 
-const isFavorite = (selectedWeather, favorites = []) => selectedWeather && favorites.find(({ id }) => id === selectedWeather.key);
-
-const mapStateToProps = (state, ownProps) => {
-    return {
-        ...ownProps,
-        ...state
-    };
-};
+const mapStateToProps = state => state;
 
 export default connect(
     mapStateToProps,

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { toggleTheme, toggleTemperature } from '../actions/weatherActions';
 import { Link } from 'react-router-dom';
+import componentsHelpers from './helpers';
 import translations from '../data/translations';
 import '../style/header.scss';
 
@@ -24,38 +25,38 @@ class Header extends Component {
     };
 
     handleToggleTheme = () => {
-        const { isLight, toggleTheme } = this.props;
+        const { toggleTheme } = this.props;
 
-        toggleTheme(isLight);
+        toggleTheme();
     };
 
     handleToggleTemperature = () => {
-        const { isCelsius, toggleTemperature } = this.props;
+        const { toggleTemperature } = this.props;
 
-        toggleTemperature(isCelsius);
+        toggleTemperature();
     };
 
     render() {
         const { home, favorites } = this.links;
         const { isLight, isCelsius } = this.props;
-        const itemClasses = isLight ? "item" : "darkItem";
-        const buttonClasses = isLight ? "toggleButton light" : "toggleButton dark";
+
+        const [itemClasses, buttonClasses] = componentsHelpers.getHeaderClasses(isLight);
 
         return (
             <div className="navbar">
                 <p>Herolo Weather Test</p>
                 <button className={buttonClasses} onClick={this.handleToggleTheme}>
-                    {isLight ? translations.header.themeButtonDark : translations.header.themeButtonLight}
+                    {componentsHelpers.getThemeButtonText(isLight)}
                 </button>
                 <button className="toggleButton" onClick={this.handleToggleTemperature}>
-                    {isCelsius ? translations.header.temperatureButtonFahrenheit : translations.header.temperatureButtonCelsius}
+                    {componentsHelpers.getTemperatureButtonText(isCelsius)}
                 </button>
                 <div className="right">
                     <Link to="/" className={`${itemClasses} active`} ref={home} onClick={this.handleClick}>
-                        Home
+                        {translations.header.mainLinkText}
                     </Link>
                     <Link to="/favorites" className={itemClasses} ref={favorites} onClick={this.handleClick}>
-                        Favorites
+                        {translations.header.favoritesLinkText}
                     </Link>
                 </div>
             </div>
@@ -63,8 +64,13 @@ class Header extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return state;
+const mapStateToProps = ({ toggleTheme, toggleTemperature, isLight, isCelsius }) => {
+    return {
+        toggleTheme,
+        toggleTemperature,
+        isLight,
+        isCelsius
+    };
 };
 
 export default connect(

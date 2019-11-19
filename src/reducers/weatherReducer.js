@@ -9,11 +9,10 @@ import {
 } from '../actions/types';
 import { mock } from '../data/mock';
 
-// TODO - Remove mock later
 const defaultState = {
     isLight: true,
     isCelsius: true,
-    ...mock
+    ...mock // TODO - Remove mock later
 };
 
 export default (state = defaultState, action) => {
