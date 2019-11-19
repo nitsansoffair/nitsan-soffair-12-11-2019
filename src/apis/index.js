@@ -7,83 +7,94 @@ import {
     GEOPOSITION_URL,
     CONDITIONS_URL,
     FORECAST_URL,
-    API_KEY,
     STATUS_OK,
     TIME_OUT
 } from './constants';
 
-const weather = axios.create({
+const defaultParams = {
+    apikey: process.env.REACT_APP_API_KEY,
     baseURL: BASE_URL,
     timeout: TIME_OUT,
     validateStatus: (status => status === STATUS_OK)
-});
+};
 
-const getAutocomplete = async(q) => {
+// TODO - Validate api correctness
+const weather = axios.create(defaultParams),
+    getAutocompleteTerm = async(q) => {
     try {
         const { data } = await weather.get(AUTOCOMPLETE_URL, {
-            transformResponse: (data, headers) => transformer.keyAndCity(JSON.parse(data)[0]),
             params: {
-                apikey: API_KEY, // TODO - Migrate API key to process.env
+                ...defaultParams,
                 q
             }
         });
 
-        return data;
+        return transformer.keyAndCity(JSON.parse(data)[0]);
     } catch (e) {
         console.log(errorMessages.api.asyncCall(e, 'getAutocomplete'));
-    }
-};
 
-const getGeoposition = async(q) => {
+        return null;
+    }
+},
+    getAutocompleteTerms = async(q) => {
+        try {
+            const { data } = await weather.get(AUTOCOMPLETE_URL, {
+                params: {
+                    ...defaultParams,
+                    q
+                }
+            });
+
+            return data.map(({ LocalizedName }) => LocalizedName);
+        } catch (e) {
+            console.log(errorMessages.api.asyncCall(e, 'getAutocompleteTerms'));
+
+            return null;
+        }
+    },
+    getGeoposition = async(q) => {
     try {
         const { data } = await weather.get(GEOPOSITION_URL, {
-            transformResponse: (data, headers) => transformer.keyAndCity(JSON.parse(data)),
             params: {
-                apikey: API_KEY,
+                ...defaultParams,
                 q
             }
         });
 
-        return data;
+        return transformer.keyAndCity(data);
     } catch (e) {
         console.log(errorMessages.api.asyncCall(e, 'getGeoposition'));
-    }
-};
 
-const getWeather = async(cityKey) => {
+        return null;
+    }
+},
+    getWeather = async(cityKey) => {
     try {
-        const { data } = await weather.get(`${CONDITIONS_URL}/${cityKey}`, {
-            params: {
-                apikey: API_KEY
-            }
-        });
+        const { data } = await weather.get(`${CONDITIONS_URL}/${cityKey}`);
 
         return data[0];
     } catch (e) {
         console.log(errorMessages.api.asyncCall(e, 'getWeather'));
+
+        return null;
     }
-};
-
-const getFivedayForecast = async(cityKey) => {
+},
+    getFivedayForecast = async(cityKey) => {
     try {
-        const { data } = await weather.get(`${FORECAST_URL}/${cityKey}`, {
-            transformResponse: (data, headers) => transformer.forecast(JSON.parse(data)),
-            params: {
-                apikey: API_KEY
-            }
-        });
+        const { data } = await weather.get(`${FORECAST_URL}/${cityKey}`);
 
-        return data;
+        return transformer.forecast(JSON.parse(data));
     } catch (e) {
         console.log(errorMessages.api.asyncCall(e, 'getFivedayForecast'));
+
+        return null;
     }
 };
 
-const api = {
-    getAutocomplete,
+export default {
+    getAutocompleteTerm,
+    getAutocompleteTerms,
     getGeoposition,
     getWeather,
     getFivedayForecast
 };
-
-export default api;

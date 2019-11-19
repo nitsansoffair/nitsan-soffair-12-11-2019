@@ -2,19 +2,23 @@
     font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
 }
 
-.navbar {
+h1 {
+    text-align: center;
+}
+
+a {
+    color: black;
+    text-decoration: none;
+}
+
+.mainMenu {
     height: 50px;
-    margin: 0 20px;
     display: flex;
     align-items: center;
-    justify-content: center;
     font-size: 16px;
 
-    a {
-        text-decoration: none;
-    }
-
     p {
+        margin-left: 20px;
         padding: 5px;
     }
 
@@ -28,7 +32,6 @@
         padding: 8px;
         cursor: pointer;
         border: none;
-        border-radius: 2px;
 
         &:focus {
             outline: none;
@@ -38,12 +41,16 @@
             color: rgba(0, 0, 0, .7);
         }
 
-        &.dark {
+        &.darkToggleButton {
             background: rgba(255, 255, 255, 1);;
             color: rgba(0, 0, 0, 1);
+
+            &:hover {
+                color: rgba(0, 0, 0, .7);
+            }
         }
 
-        &.light {
+        &.lightToggleButton {
             background: rgba(0, 0, 0, 1);
             color: rgba(255, 255, 255, 1);
 
@@ -53,31 +60,31 @@
         }
     }
 
-    .right {
+    .rightMenu {
         margin-left: auto;
-    }
 
-    .item {
-        padding: 1rem;
+        .linkItem {
+            padding: 1rem;
 
-        @media (max-width: 650px) {
-            padding: 1.1rem;
-        }
-
-        &.light {
-            color: black;
-
-            &.active, &:hover {
-                background: rgba(34, 46, 38, .15);
+            @media (max-width: 650px) {
+                padding: 1.1rem;
             }
-        }
 
-        &.dark {
-            color: white;
-
-            &.active, &:hover {
+            &.lightLinkItem {
                 color: black;
-                background: white;
+
+                &.active, &:hover {
+                    background: rgba(34, 46, 38, .15);
+                }
+            }
+
+            &.darkLinkItem {
+                color: white;
+
+                &.active, &:hover {
+                    color: black;
+                    background: white;
+                }
             }
         }
     }

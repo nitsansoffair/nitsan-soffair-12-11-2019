@@ -9,6 +9,7 @@
     "celsiusChar": "C"
   },
   "header": {
+    "slugText": "Herolo Weather Test",
     "themeButtonDark": "Dark",
     "themeButtonLight": "Light",
     "temperatureButtonFahrenheit": "Fahrenheit",

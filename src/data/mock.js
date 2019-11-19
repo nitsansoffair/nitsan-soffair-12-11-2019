@@ -1,4 +1,4 @@
-export const mock = {
+export default {
     selectedWeather: {
         key: 215854,
         term: "Tel Aviv",

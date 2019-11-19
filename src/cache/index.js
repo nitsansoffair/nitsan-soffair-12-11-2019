@@ -16,6 +16,15 @@ class Cache {
     setWeather(term, weather){
         return this.cache.set(term, weather);
     }
+
+    // TODO - Add autocomplete terms to catch
+    getTerms(term){
+
+    }
+
+    setTerms(term, autocompleteTerms){
+
+    }
 }
 
 const CacheInstance = new Cache();

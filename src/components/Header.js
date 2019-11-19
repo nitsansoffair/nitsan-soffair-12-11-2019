@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { toggleTheme, toggleTemperature } from '../actions/weatherActions';
+import { toggleTheme, toggleTemperature } from '../actions/appActions';
 import { Link } from 'react-router-dom';
 import componentsHelpers from './helpers';
 import translations from '../data/translations';
@@ -16,13 +16,28 @@ class Header extends Component {
         };
     }
 
-    handleClick = ({ target }) => {
-        Object.values(this.links).forEach(({ current }) => {
-            current.classList.remove('active');
-        });
+    componentDidMount() {
+        this.updateLinksClasses();
+    }
 
-        target.classList.add('active');
-    };
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(prevProps !== this.props){
+            this.updateLinksClasses();
+        }
+    }
+
+    updateLinksClasses(){
+        const { isMainPage } = this.props;
+        const { home, favorites } = this.links;
+
+        if(isMainPage){
+            favorites.current.classList.remove('active');
+            home.current.classList.add('active');
+        } else {
+            home.current.classList.remove('active');
+            favorites.current.classList.add('active');
+        }
+    }
 
     handleToggleTheme = () => {
         const { toggleTheme } = this.props;
@@ -40,22 +55,22 @@ class Header extends Component {
         const { home, favorites } = this.links;
         const { isLight, isCelsius } = this.props;
 
-        const [itemClasses, buttonClasses] = componentsHelpers.getHeaderClasses(isLight);
+        const [linkItemClasses, themeButtonClasses] = componentsHelpers.styling.getHeaderClasses(isLight);
 
         return (
-            <div className="navbar">
-                <p>Herolo Weather Test</p>
-                <button className={buttonClasses} onClick={this.handleToggleTheme}>
-                    {componentsHelpers.getThemeButtonText(isLight)}
+            <div className="mainMenu">
+                <p>{translations.header.slugText}</p>
+                <button className={themeButtonClasses} onClick={this.handleToggleTheme}>
+                    {componentsHelpers.text.getThemeButtonText(isLight)}
                 </button>
                 <button className="toggleButton" onClick={this.handleToggleTemperature}>
-                    {componentsHelpers.getTemperatureButtonText(isCelsius)}
+                    {componentsHelpers.text.getTemperatureButtonText(isCelsius)}
                 </button>
-                <div className="right">
-                    <Link to="/" className={`${itemClasses} active`} ref={home} onClick={this.handleClick}>
+                <div className="rightMenu">
+                    <Link to="/" className={linkItemClasses} ref={home}>
                         {translations.header.mainLinkText}
                     </Link>
-                    <Link to="/favorites" className={itemClasses} ref={favorites} onClick={this.handleClick}>
+                    <Link to="/favorites" className={linkItemClasses} ref={favorites}>
                         {translations.header.favoritesLinkText}
                     </Link>
                 </div>
@@ -64,12 +79,11 @@ class Header extends Component {
     }
 }
 
-const mapStateToProps = ({ toggleTheme, toggleTemperature, isLight, isCelsius }) => {
+const mapStateToProps = ({ app: { isLight, isCelsius, isMainPage } }) => {
     return {
-        toggleTheme,
-        toggleTemperature,
         isLight,
-        isCelsius
+        isCelsius,
+        isMainPage
     };
 };
 

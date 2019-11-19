@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchWeatherAndForecast, fetchWeatherByGeoposition, addFavorite, deleteFavorite } from '../actions/weatherActions';
+import { togglePage } from '../actions/appActions';
 import transformer from '../actions/transformer';
 import componentsHelpers from './helpers';
 import translations from '../data/translations';
-import '../style/main.scss';
+import '../style/index.scss';
 
 class Main extends Component {
     state = {
@@ -12,21 +13,29 @@ class Main extends Component {
     };
 
     componentDidMount() {
-        const { fetchWeatherByGeoposition, firstLoad, onFirstLoad } = this.props;
+        const { isFirstLoad, onFirstLoad, togglePage, isMainPage } = this.props;
 
-        if(firstLoad){
-            navigator.geolocation.getCurrentPosition(({ coords }) => {
-                fetchWeatherByGeoposition(transformer.geoPositionParams(coords));
-            });
+        if(isFirstLoad){
+            this.fetchGeolocation();
 
             onFirstLoad();
         }
+
+        !isMainPage && togglePage();
+    }
+
+    fetchGeolocation(){
+        const { fetchWeatherByGeoposition } = this.props;
+
+        navigator.geolocation.getCurrentPosition(({ coords }) => {
+            fetchWeatherByGeoposition(transformer.geoPositionParams(coords));
+        });
     }
 
     onFavoritesClick = () => {
         const { selectedWeather, favorites } = this.props;
 
-        if(componentsHelpers.isFavorite(selectedWeather, favorites)){
+        if(componentsHelpers.calculations.isFavorite(selectedWeather, favorites)){
             const { deleteFavorite, selectedWeather: { key } } = this.props;
 
             deleteFavorite(key);
@@ -66,7 +75,7 @@ class Main extends Component {
     validate = () => {
         const { term } = this.state;
 
-        if(!componentsHelpers.validateInput(term)){
+        if(!componentsHelpers.others.validateInput(term)){
             this.setState({
                 inputError: translations.main.inputError
             });
@@ -90,8 +99,12 @@ class Main extends Component {
         }
 
         if(error){
+            const { isLight } = this.props;
+            const errorToastClasses = componentsHelpers.styling.getErrorToastClass(isLight);
+
             return (
-                <div className="errorToast">
+                <div className={errorToastClasses}>
+                    <i className="fas fa-exclamation-triangle"/>
                     {error}
                 </div>
             );
@@ -102,7 +115,7 @@ class Main extends Component {
 
     renderFivedayForecast(){
         const { selectedWeather: { fivedayForecast }, isCelsius } = this.props;
-        const temperatureChar = componentsHelpers.getTemperatureChar(isCelsius);
+        const temperatureChar = componentsHelpers.text.getTemperatureChar(isCelsius);
 
         if(fivedayForecast){
             const { headline, daysWeather } = fivedayForecast;
@@ -113,8 +126,10 @@ class Main extends Component {
                     <div className="cardsContainer">
                         {daysWeather.map(({day, temperature}, key) => (
                             <div key={key} className="cardItem">
-                                <h3>{day}</h3>
-                                <h3>{componentsHelpers.getTemperature(isCelsius, temperature)}&#176; {temperatureChar}</h3>
+                                <div className="dayTitle">
+                                    <h3>{day}</h3>
+                                </div>
+                                <h3>{componentsHelpers.others.getTemperature(isCelsius, temperature)}&#176; {temperatureChar}</h3>
                             </div>
                         ))}
                     </div>
@@ -128,11 +143,11 @@ class Main extends Component {
     renderFavoritesButton(){
         const { selectedWeather, favorites, isLight } = this.props;
 
-        const isFavorite = componentsHelpers.isFavorite(selectedWeather, favorites);
-        const [iconClasses, buttonClasses] = componentsHelpers.getFavoritesClasses({ favorites, isLight });
+        const isFavorite = componentsHelpers.calculations.isFavorite(selectedWeather, favorites);
+        const [iconClasses, buttonClasses] = componentsHelpers.styling.getFavoritesClasses({ favorites, isLight });
 
         return (
-            <div className="buttonContainer">
+            <div className="favoritesButtonContainer">
                 <i className={iconClasses}/>
                 <button className={buttonClasses} onClick={this.onFavoritesClick}>
                     { isFavorite ? translations.main.deleteFavoritesButtonText : translations.main.addFavoritesButtonText }
@@ -150,7 +165,7 @@ class Main extends Component {
             return (
                 <>
                     {this.renderFavoritesButton()}
-                    <div className="smallCard">
+                    <div className="singleCityCard">
                         <p>{name}</p>
                         <p>{temperatureValue}&#176; C</p>
                     </div>
@@ -163,28 +178,42 @@ class Main extends Component {
     }
 
     render() {
-        const { term } = this.state;
+        const { term, autocompleteTerms } = this.state;
 
+        // TODO - Make autocomplete
         return (
             <>
-                <form onSubmit={this.onFormSubmit}>
-                    <input
-                        type="text"
-                        value={term}
-                        placeholder={translations.main.inputPlaceholder}
-                        onChange={this.onInputChange}
-                    />
+                <form onSubmit={this.onFormSubmit} autoComplete={false}>
+                    <div className="autocompleteInput">
+                        <input
+                            type="text"
+                            value={term}
+                            placeholder={translations.main.inputPlaceholder}
+                            onChange={this.onInputChange}
+                        />
+                    </div>
+                    {this.renderError()}
                 </form>
-                {this.renderError()}
                 {this.renderContainer()}
             </>
         );
     }
 }
 
-const mapStateToProps = state => state;
+const mapStateToProps = ({ weather: { selectedWeather, favorites = [], autocompleteTerms }, app: { isMainPage, isLight, isCelsius } }, { isFirstLoad, onFirstLoad }) => {
+    return {
+        selectedWeather,
+        favorites,
+        autocompleteTerms,
+        isMainPage,
+        isLight,
+        isCelsius,
+        isFirstLoad,
+        onFirstLoad
+    };
+};
 
 export default connect(
     mapStateToProps,
-    { fetchWeatherAndForecast, fetchWeatherByGeoposition, addFavorite, deleteFavorite }
+    { fetchWeatherAndForecast, fetchWeatherByGeoposition, addFavorite, deleteFavorite, togglePage }
 )(Main);

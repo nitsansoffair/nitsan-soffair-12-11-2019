@@ -3,82 +3,72 @@ import actionHelpers from './helpers';
 import {
     FETCH_WEATHER_AND_FORECAST,
     FETCH_CURRENT_WEATHER,
+    FETCH_AUTOCOMPLETE_TERMS,
     ADD_FAVORITE,
     DELETE_FAVORITE,
     SELECT_WEATHER,
-    TOGGLE_THEME,
-    TOGGLE_TEMPERATURE
 } from './types';
-import errorMessages from '../data/errorMessages';
+import api from "../apis";
+import errorMessages from "../data/errorMessages";
 
 export const fetchWeatherAndForecast = (term) => async(dispatch) => {
     let selectedWeather = CacheInstance.getWeather(term);
 
     if (!selectedWeather) {
-        selectedWeather = await actionHelpers.fetchSelectedWeather(term);
-
-        selectedWeather && !CacheInstance.setWeather(term, selectedWeather) && console.log(errorMessages.cache.setError('fetchWeatherAndForecast'));
+        selectedWeather = await actionHelpers.asyncCalls.fetchSelectedWeather(term);
     }
+
+    const weather = actionHelpers.others.handleAndUpdateWeather(selectedWeather, 'fetchWeatherAndForecast');
 
     dispatch({
         type: FETCH_WEATHER_AND_FORECAST,
-        payload: selectedWeather
+        payload: weather
     });
-};
+},
+    fetchWeatherByGeoposition = (q) => async(dispatch) => {
+        let currentWeather = await actionHelpers.asyncCalls.fetchCurrentWeather(q);
+        const weather = actionHelpers.handlers.weather(currentWeather, 'fetchWeatherByGeoposition');
 
-export const fetchWeatherByGeoposition = (q) => async(dispatch) => {
-    const currentWeather = await actionHelpers.fetchCurrentWeather(q);
+        dispatch({
+            type: FETCH_CURRENT_WEATHER,
+            payload: weather
+        });
+},
+    getAutocompleteTerm = (term) => async(dispatch) => {
+        let autocompleteTerms = CacheInstance.getTerms(term);
 
-    currentWeather && !CacheInstance.setWeather(currentWeather.term, currentWeather) && console.log(errorMessages.cache.setError('fetchWeatherByGeoposition'));
+        if(!autocompleteTerms){
+            autocompleteTerms = await api.getAutocompleteTerms(term);
+        }
 
-    dispatch({
-        type: FETCH_CURRENT_WEATHER,
-        payload: currentWeather
-    });
-};
+        autocompleteTerms = actionHelpers.handlers.autocomplete(term, autocompleteTerms);
+        dispatch({
+            type: FETCH_AUTOCOMPLETE_TERMS,
+            payload: autocompleteTerms
+        });
+    },
+    selectWeather = (term) => (dispatch) => {
+        dispatch({
+            type: SELECT_WEATHER,
+            payload: CacheInstance.getWeather(term)
+        });
+},
+    addFavorite = (favorite) => (dispatch, getState) => {
+        const { weather: { favorites = [] } } = getState();
 
-export const selectWeather = (term) => (dispatch) => {
-    dispatch({
-        type: SELECT_WEATHER,
-        payload: CacheInstance.getWeather(term)
-    });
-};
+        dispatch({
+            type: ADD_FAVORITE,
+            payload: [
+                ...favorites,
+                favorite
+            ]
+        });
+},
+    deleteFavorite = (favoriteId) => (dispatch, getState) => {
+        const { weather: { favorites = [] } } = getState();
 
-export const addFavorite = (favorite) => (dispatch, getState) => {
-    const { favorites = [] } = getState();
-
-    dispatch({
-        type: ADD_FAVORITE,
-        payload: [
-            ...favorites,
-            favorite
-        ]
-    });
-};
-
-export const deleteFavorite = (favoriteId) => (dispatch, getState) => {
-    const { favorites = [] } = getState();
-
-    dispatch({
-        type: DELETE_FAVORITE,
-        payload: favorites.filter(({ id }) => id !== favoriteId)
-    });
-};
-
-export const toggleTheme = () => (dispatch, getState) => {
-    const { isLight } = getState();
-
-    dispatch({
-        type: TOGGLE_THEME,
-        payload: !isLight
-    });
-};
-
-export const toggleTemperature = () => (dispatch, getState) => {
-    const { isCelsius } = getState();
-
-    dispatch({
-        type: TOGGLE_TEMPERATURE,
-        payload: !isCelsius
-    });
+        dispatch({
+            type: DELETE_FAVORITE,
+            payload: favorites.filter(({ id }) => id !== favoriteId)
+        });
 };

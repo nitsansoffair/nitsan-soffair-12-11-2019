@@ -1,58 +1,92 @@
 import api from '../apis';
+import CacheInstance from '../cache';
 import transformer from './transformer';
 import { days } from '../data/days';
 import errorMessages from '../data/errorMessages';
 
-const mean = (n1, n2) => (n1 + n2) / 2;
+const calculations = {
+    mean: (n1, n2) => (n1 + n2) / 2,
+    toCelsius: (fahrenheit) => (fahrenheit - 32) * 5/9,
+    getDay: (string) => days[new Date(string).getDay()]
+};
 
-const toCelsius = (fahrenheit) => (fahrenheit - 32) * 5/9;
+const validators = {
+    array: (array) => Array.isArray(array) && array.length
+};
 
-const getDay = (string) => days[new Date(string).getDay()];
+const asyncCalls = {
+    fetchSelectedWeather: async(term) => {
+        try {
+            const { Key, LocalizedName } = await api.getAutocompleteTerm(term);
+            const [weatherData, fivedayForecast] = await Promise.all([api.getWeather(Key) ,api.getFivedayForecast(Key)]);
 
-const fetchSelectedWeather = async(term) => {
-    try {
-        const { Key, LocalizedName } = await api.getAutocomplete(term);
-        const [weatherData, fivedayForecast] = await Promise.all([api.getWeather(Key) ,api.getFivedayForecast(Key)]);
+            return {
+                key: Key,
+                term,
+                ...transformer.weather(weatherData),
+                name: LocalizedName,
+                fivedayForecast
+            };
+        } catch (e) {
+            console.log(errorMessages.api.fetch_weather('fetchSelectedWeather'));
 
-        return {
-            key: Key,
-            term,
-            ...transformer.weather(weatherData),
-            name: LocalizedName,
-            fivedayForecast
-        };
-    } catch (e) {
-        return {
-            error: errorMessages.api.fetch_weather('fetchSelectedWeather')
-        };
+            return null;
+        }
+    },
+    fetchCurrentWeather: async(q) => {
+        try {
+            const { Key, LocalizedName } = await api.getGeoposition(q);
+            const [weatherData, fivedayForecast] = await Promise.all([api.getWeather(Key) ,api.getFivedayForecast(Key)]);
+
+            return {
+                key: Key,
+                term: LocalizedName,
+                ...transformer.weather(weatherData),
+                name: LocalizedName,
+                fivedayForecast
+            };
+        } catch (e) {
+            console.log(errorMessages.api.fetch_geoposition('fetchCurrentWeather'));
+
+            return null;
+        }
     }
 };
 
-const fetchCurrentWeather = async(q) => {
-    try {
-        const { Key, LocalizedName } = await api.getGeoposition(q);
-        const [weatherData, fivedayForecast] = await Promise.all([api.getWeather(Key) ,api.getFivedayForecast(Key)]);
+const handlers = {
+    weather: (weatherParam, errLocation) => {
+        let weather = weatherParam;
 
-        return {
-            key: Key,
-            term: LocalizedName,
-            ...transformer.weather(weatherData),
-            name: LocalizedName,
-            fivedayForecast
-        };
-    } catch (e) {
-        return {
-            error: errorMessages.api.fetch_geoposition('fetchCurrentWeather')
-        };
+        if(!weather){
+            console.log(errorMessages.cache.setError(errLocation));
+
+            weather = {
+                error: errorMessages.api.internalServerError
+            };
+        } else {
+            CacheInstance.setWeather(weather.term, weather);
+        }
+
+        return weather;
+    },
+    autocomplete: (term, autocompleteTerms) => {
+        if(autocompleteTerms){
+            CacheInstance.setTerms(term, autocompleteTerms);
+        } else {
+            console.log(errorMessages.api.asyncCall('Error empty autocomplete term', 'getAutocompleteTerm'));
+
+            autocompleteTerms = {
+                error: errorMessages.api.internalServerError
+            };
+        }
+
+        return autocompleteTerms;
     }
 };
 
-const actionHelpers = {
-    mean,
-    toCelsius,
-    getDay,
-    fetchSelectedWeather,
-    fetchCurrentWeather
+export default {
+    calculations,
+    asyncCalls,
+    validators,
+    handlers
 };
-
-export default actionHelpers;
