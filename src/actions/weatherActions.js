@@ -1,3 +1,4 @@
+import api from '../apis';
 import CacheInstance from '../cache';
 import actionHelpers from './helpers';
 import {
@@ -8,8 +9,6 @@ import {
     DELETE_FAVORITE,
     SELECT_WEATHER,
 } from './types';
-import api from "../apis";
-import errorMessages from "../data/errorMessages";
 
 export const fetchWeatherAndForecast = (term) => async(dispatch) => {
     let selectedWeather = CacheInstance.getWeather(term);
@@ -18,7 +17,7 @@ export const fetchWeatherAndForecast = (term) => async(dispatch) => {
         selectedWeather = await actionHelpers.asyncCalls.fetchSelectedWeather(term);
     }
 
-    const weather = actionHelpers.others.handleAndUpdateWeather(selectedWeather, 'fetchWeatherAndForecast');
+    const weather = actionHelpers.handlers.weather(selectedWeather, 'fetchWeatherAndForecast');
 
     dispatch({
         type: FETCH_WEATHER_AND_FORECAST,
@@ -34,7 +33,7 @@ export const fetchWeatherAndForecast = (term) => async(dispatch) => {
             payload: weather
         });
 },
-    getAutocompleteTerm = (term) => async(dispatch) => {
+    getAutocompleteTerms = (term) => async(dispatch) => {
         let autocompleteTerms = CacheInstance.getTerms(term);
 
         if(!autocompleteTerms){

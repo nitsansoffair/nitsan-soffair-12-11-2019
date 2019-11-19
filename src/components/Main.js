@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchWeatherAndForecast, fetchWeatherByGeoposition, addFavorite, deleteFavorite } from '../actions/weatherActions';
+import { fetchWeatherAndForecast, fetchWeatherByGeoposition, getAutocompleteTerms, addFavorite, deleteFavorite } from '../actions/weatherActions';
 import { togglePage } from '../actions/appActions';
 import transformer from '../actions/transformer';
 import componentsHelpers from './helpers';
@@ -56,9 +56,13 @@ class Main extends Component {
     };
 
     onInputChange = ({ target: { value } }) => {
+        const { getAutocompleteTerms } = this.props;
+
         this.setState({
             term: value
         });
+
+        getAutocompleteTerms();
     };
 
     onFormSubmit = (event) => {
@@ -215,5 +219,5 @@ const mapStateToProps = ({ weather: { selectedWeather, favorites = [], autocompl
 
 export default connect(
     mapStateToProps,
-    { fetchWeatherAndForecast, fetchWeatherByGeoposition, addFavorite, deleteFavorite, togglePage }
+    { fetchWeatherAndForecast, fetchWeatherByGeoposition, getAutocompleteTerms, addFavorite, deleteFavorite, togglePage }
 )(Main);
