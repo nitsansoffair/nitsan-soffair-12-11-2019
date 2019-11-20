@@ -34,22 +34,35 @@
         justify-content: center;
         align-items: center;
 
-        //TODO - Add autocomplete terms
-        input {
-            width: 400px;
-            height: 30px;
-            margin: 10px 0;
-            padding: 5px;
-            border: 1px solid rgba(34, 36, 38, .15);
-            border-radius: .2rem;
+        .autocompleteInput {
+            display: flex;
+            flex-direction: column;
 
-            @media (max-width: 650px) {
-                width: 300px;
+            input {
+                width: 400px;
+                height: 30px;
+                margin-top: 10px;
+                padding: 5px;
+                border: 1px solid rgba(34, 36, 38, .15);
+                border-radius: .2rem;
+
+                @media (max-width: 650px) {
+                    width: 300px;
+                }
+
+                &:focus {
+                    outline: none;
+                    border: 1px solid rgba(34, 36, 38, .30);
+                }
             }
 
-            &:focus {
-                outline: none;
-                border: 1px solid rgba(34, 36, 38, .30);
+            .autoCompleteItems {
+                border: 1px solid #d4d4d4;
+                border-top: none;
+
+                &:hover {
+                    background: #e9e9e9;
+                }
             }
         }
 

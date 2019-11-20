@@ -78,5 +78,6 @@ export default {
                 temperatureValue: 22
             }
         },
-    ]
+    ],
+    autocompleteTerms:  ["Afghanistan", "Albania", "Algeria", "Andorra"]
 };

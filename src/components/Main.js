@@ -4,19 +4,28 @@ import { fetchWeatherAndForecast, fetchWeatherByGeoposition, getAutocompleteTerm
 import { togglePage } from '../actions/appActions';
 import transformer from '../actions/transformer';
 import componentsHelpers from './helpers';
+import _ from 'lodash';
+import { TIME_PERIOD } from './constants';
 import translations from '../data/translations';
 import '../style/index.scss';
+import CacheInstance from "../cache";
 
 class Main extends Component {
-    state = {
-        term: translations.main.defaultTerm
-    };
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            term: translations.main.defaultTerm
+        };
+
+        this.inputRef = React.createRef();
+    }
 
     componentDidMount() {
-        const { isFirstLoad, onFirstLoad, togglePage, isMainPage } = this.props;
+        const {isFirstLoad, onFirstLoad, togglePage, isMainPage} = this.props;
 
-        if(isFirstLoad){
-            this.fetchGeolocation();
+        if (isFirstLoad) {
+            // this.fetchGeolocation();
 
             onFirstLoad();
         }
@@ -24,23 +33,64 @@ class Main extends Component {
         !isMainPage && togglePage();
     }
 
-    fetchGeolocation(){
-        const { fetchWeatherByGeoposition } = this.props;
+    fetchGeolocation() {
+        const {fetchWeatherByGeoposition} = this.props;
 
-        navigator.geolocation.getCurrentPosition(({ coords }) => {
+        navigator.geolocation.getCurrentPosition(({coords}) => {
             fetchWeatherByGeoposition(transformer.geoPositionParams(coords));
         });
     }
 
-    onFavoritesClick = () => {
-        const { selectedWeather, favorites } = this.props;
+    createAutocompleteElement() {
+        const { autocompleteTerms } = this.props;
+        const { current: { value } } = this.inputRef;
+        let autocompleteElems = [];
 
-        if(componentsHelpers.calculations.isFavorite(selectedWeather, favorites)){
-            const { deleteFavorite, selectedWeather: { key } } = this.props;
+        // TODO - Validate Cache
+        console.log(
+            CacheInstance.setWeather(value, this.props.selectedWeather),
+            CacheInstance.setTerms(value, autocompleteTerms),
+            CacheInstance.getTerms(value),
+            CacheInstance.getWeather(value)
+        );
+
+        autocompleteTerms.forEach((autocompleteTerm, key) => {
+            const autocompletePrefix = autocompleteTerm.substr(0, value.length);
+
+            if (value && autocompletePrefix.toUpperCase() === value.toUpperCase()) {
+                const autocompletePostfix = autocompleteTerm.substr(value.length, autocompleteTerm.length);
+
+                const termDivElem = (
+                    <div key={key} className="autoCompleteItems"
+                         onClick={_.throttle(() => this.handleAutocompleteClick(autocompleteTerm), TIME_PERIOD)}>
+                        <strong>
+                            {autocompletePrefix}
+                        </strong>
+                        {autocompletePostfix}
+                    </div>
+                );
+
+                autocompleteElems = [
+                    ...autocompleteElems,
+                    termDivElem
+                ];
+            }
+        });
+
+        this.setState({
+            autocompleteElems
+        });
+    }
+
+    onFavoritesClick = () => {
+        const {selectedWeather, favorites} = this.props;
+
+        if (componentsHelpers.calculations.isFavorite(selectedWeather, favorites)) {
+            const {deleteFavorite, selectedWeather: {key}} = this.props;
 
             deleteFavorite(key);
         } else {
-            const { addFavorite, selectedWeather: { term, name, weatherText, temperatureValue, key } } = this.props;
+            const {addFavorite, selectedWeather: {term, name, weatherText, temperatureValue, key}} = this.props;
             const favorite = {
                 id: key,
                 term,
@@ -55,6 +105,13 @@ class Main extends Component {
         }
     };
 
+    handleAutocompleteClick = (term) => {
+        this.setState({
+            term,
+            autocompleteElems: null
+        });
+    };
+
     onInputChange = ({ target: { value } }) => {
         const { getAutocompleteTerms } = this.props;
 
@@ -63,6 +120,8 @@ class Main extends Component {
         });
 
         getAutocompleteTerms();
+
+        this.createAutocompleteElement();
     };
 
     onFormSubmit = (event) => {
@@ -153,7 +212,7 @@ class Main extends Component {
         return (
             <div className="favoritesButtonContainer">
                 <i className={iconClasses}/>
-                <button className={buttonClasses} onClick={this.onFavoritesClick}>
+                <button className={buttonClasses} onClick={_.throttle(this.onFavoritesClick, TIME_PERIOD)}>
                     { isFavorite ? translations.main.deleteFavoritesButtonText : translations.main.addFavoritesButtonText }
                 </button>
             </div>
@@ -182,19 +241,20 @@ class Main extends Component {
     }
 
     render() {
-        const { term, autocompleteTerms } = this.state;
+        const { term, autocompleteElems } = this.state;
 
-        // TODO - Make autocomplete
         return (
             <>
-                <form onSubmit={this.onFormSubmit} autoComplete={false}>
+                <form onSubmit={this.onFormSubmit} autoComplete="false">
                     <div className="autocompleteInput">
                         <input
                             type="text"
                             value={term}
                             placeholder={translations.main.inputPlaceholder}
                             onChange={this.onInputChange}
+                            ref={this.inputRef}
                         />
+                        {autocompleteElems}
                     </div>
                     {this.renderError()}
                 </form>
@@ -204,7 +264,7 @@ class Main extends Component {
     }
 }
 
-const mapStateToProps = ({ weather: { selectedWeather, favorites = [], autocompleteTerms }, app: { isMainPage, isLight, isCelsius } }, { isFirstLoad, onFirstLoad }) => {
+const mapStateToProps = ({ weather: { selectedWeather, favorites = [], autocompleteTerms = [] }, app: { isMainPage, isLight, isCelsius } }, { isFirstLoad, onFirstLoad }) => {
     return {
         selectedWeather,
         favorites,

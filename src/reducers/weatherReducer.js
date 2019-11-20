@@ -6,8 +6,11 @@ import {
     ADD_FAVORITE,
     DELETE_FAVORITE
 } from '../actions/types';
+import mock from '../data/mock';
 
-const defaultState = {};
+const defaultState = {
+    ...mock
+};
 
 export default (state = defaultState, action) => {
     switch (action.type) {
