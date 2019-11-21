@@ -1,12 +1,14 @@
+@import '../base/variables';
+
 @keyframes darkContainer {
     from {
-        background: white;
-        color: black;
+        background: $white;
+        color: $black;
     }
 
     to {
-        background: black;
-        color: white;
+        background: $black;
+        color: $white;
     }
 }
 

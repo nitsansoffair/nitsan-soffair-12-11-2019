@@ -8,7 +8,6 @@ import actionHelpers from '../actions/helpers';
 import _ from 'lodash';
 import { TIME_PERIOD, ARROW_DOWN, ARROW_UP, ENTER, ESCAPE } from './constants';
 import translations from '../data/translations';
-import '../style/components/index.scss';
 
 class Main extends Component {
     constructor(props) {
@@ -31,6 +30,10 @@ class Main extends Component {
         }
 
         !isMainPage && togglePage();
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('click', _.throttle(() => this.closeAutocomplete(), TIME_PERIOD));
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -100,6 +103,8 @@ class Main extends Component {
                 autocompleteElems,
                 focusedElemIdx
             });
+
+            document.addEventListener('click', _.throttle(() => this.closeAutocomplete(), TIME_PERIOD));
         }
     }
 
@@ -110,6 +115,8 @@ class Main extends Component {
         });
 
         this.autocompleteRefs = null;
+
+        document.removeEventListener('click', _.throttle(() => this.closeAutocomplete(), TIME_PERIOD));
     }
 
     updateAutocompleteClasses(focusedElemIdx, updatedFocusedElemIdx){
@@ -158,6 +165,8 @@ class Main extends Component {
                 case ARROW_UP:
                     if(componentsHelpers.validators.exists(focusedElemIdx)){
                         updatedFocusedElemIdx = (focusedElemIdx - 1 + this.autocompleteRefs.length) % this.autocompleteRefs.length;
+                    } else {
+                        return;
                     }
                     break;
                 case ARROW_DOWN:
@@ -169,7 +178,6 @@ class Main extends Component {
                     break;
                 case ENTER:
                     this.handleAutocompleteClick(autocompleteTerms[focusedElemIdx]);
-                    this.closeAutocomplete();
 
                     return;
                 case ESCAPE:
@@ -177,7 +185,7 @@ class Main extends Component {
 
                     return;
                 default:
-                    break;
+                    return;
             }
 
             this.setState({
@@ -195,25 +203,25 @@ class Main extends Component {
             term: value
         });
 
-        // value && getAutocompleteTerms(value);
+        if(value && this.validate(value)){
+            // getAutocompleteTerms(value);
+            this.createAutocompleteElement();
+        }
 
-        this.createAutocompleteElement();
     };
 
     onFormSubmit = (event) => {
         event.preventDefault();
 
         const { fetchWeatherAndForecast } = this.props;
-        const { term } = this.state;
+        const { current: { value } } = this.inputRef;
 
-        if(this.validate()){
+        if(value && this.validate(value)){
             // fetchWeatherAndForecast(term);
         }
     };
 
-    validate = () => {
-        const { term } = this.state;
-
+    validate = (term) => {
         if(!componentsHelpers.validators.input(term)){
             this.setState({
                 inputError: translations.main.inputError

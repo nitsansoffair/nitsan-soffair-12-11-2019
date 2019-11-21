@@ -4,7 +4,6 @@ import { toggleTheme, toggleTemperature } from '../actions/appActions';
 import { Link } from 'react-router-dom';
 import componentsHelpers from './helpers';
 import translations from '../data/translations';
-import '../style/components/header.scss';
 
 class Header extends Component {
     constructor(props) {

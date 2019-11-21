@@ -1,15 +1,19 @@
-@import '../helpers/colors';
-@import '../helpers/animations';
+@import '../base/variables';
+@import '../base/mixins';
+@import '../modules/animations';
 
 .darkContainer {
-    background: black;
-    color: white;
-    animation-name: darkContainer;
-    animation-duration: 1s;
+    background: $black;
+    color: $white;
+
+    animation: {
+        name: darkContainer;
+        duration: 1s;
+    }
 
     .cardItem {
         a {
-            color: white;
+            color: $white;
         }
     }
 }
@@ -20,10 +24,7 @@
     min-height: 100vh;
 
     form {
-        display: flex;
-        flex-flow: column;
-        justify-content: center;
-        align-items: center;
+        @include flex(column, center, center);
 
         .autocompleteInput {
             display: flex;
@@ -34,8 +35,10 @@
                 height: 30px;
                 margin-top: 10px;
                 padding: 5px;
-                border: 1px solid rgba(map-get($inputColors, "base"), .15);
-                border-radius: .2rem;
+
+                border: 1px solid rgba(map-get($inputColors, "base"), .15) {
+                    radius: .2rem;
+                }
 
                 @media (max-width: 650px) {
                     width: 300px;
@@ -48,8 +51,9 @@
             }
 
             .autocompleteItems {
-                border: 1px solid #d4d4d4;
-                border-top: none;
+                border: 1px solid #d4d4d4 {
+                    top: none;
+                }
 
                 &.lightAutocomplete {
                     &:hover {
@@ -76,18 +80,23 @@
 
         .errorToast {
             padding: 10px;
-            background: white;
+            background: $white;
             color: red;
-            font-weight: 700;
-            border: 1px solid red;
-            border-radius: 2px;
+            font-weight: $bold;
+
+            border: 1px solid red {
+                radius: 2px;
+            }
+
             box-shadow: rgba(207, 0, 15, .2) 1px 1px 5px;
-            animation: toastOpacity;
-            animation-duration: .5s;
+
+            animation: toastOpacity {
+                duration: .5s;
+            }
 
             &.darkErrorToast {
                 background: red;
-                color: white;
+                color: $white;
             }
         }
     }
@@ -117,23 +126,11 @@
             }
 
             &.darkFavoritesButton {
-                background: rgba(map-get($buttonColors, "darkBase"), .8);
-                color: map-get($colors, "light");
-                border: 1px solid map-get($colors, "light");
-
-                &:hover {
-                    color: rgba(map-get($buttonColors, "lightBase"), .7);
-                }
+                @include favoriteButtonTheme("darkBase", "light", "lightBase");
             }
 
             &.lightFavoritesButton {
-                color: map-get($colors, "dark");
-                background: rgba(map-get($buttonColors, "lightBase"), .8);
-                border: 1px solid map-get($colors, "gray");
-
-                &:hover {
-                    color: rgba(map-get($buttonColors, "darkBase"), .7);
-                }
+                @include favoriteButtonTheme("lightBase", "dark", "darkBase");
             }
 
             @media (max-width: 550px) {
@@ -143,16 +140,13 @@
     }
 
     .cardsContainer {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-around;
+        @include flex(row wrap, space-around);
 
         .cardItem {
-            width: 250px;
+            width: $cardWidth;
             margin: 20px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+
+            @include flex(column wrap, $justifyContentDefault, center);
 
             h3, p {
                 margin: 10px;
@@ -160,7 +154,7 @@
             }
 
             a {
-                font-weight: 700;
+                font-weight: $bold;
 
                 &:hover {
                     text-decoration: underline;
@@ -169,13 +163,11 @@
 
             .favoriteHeader {
                 margin-bottom: 10px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
+                @include flex(column wrap, $justifyContentDefault, center);
             }
 
             .dayTitle {
-                font-weight: 700;
+                font-weight: $bold;
             }
         }
     }

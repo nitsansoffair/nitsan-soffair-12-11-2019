@@ -1,0 +1,33 @@
+@import "variables";
+
+// Themes
+@mixin theme($backgroundColor, $color, $hoverColor){
+    background: map-get($colors, $backgroundColor);
+    color: map-get($colors, $color);
+
+    &:hover {
+        color: rgba(map-get($buttonColors, $hoverColor), .7);
+    }
+}
+
+@mixin favoriteButtonTheme($backgroundColor, $color, $hoverColor){
+    background: rgba(map-get($buttonColors, $backgroundColor), .8);
+    color: map-get($colors, $color);
+    border: 1px solid map-get($colors, $color);
+
+    &:hover {
+        color: rgba(map-get($buttonColors, $hoverColor), .7);
+    }
+}
+
+// Others
+@mixin flex($flow, $justifyContent, $alignItems: flex-start){
+    display: flex;
+
+    @if $flow {
+        flex-flow: $flow;
+    }
+
+    justify-content: $justifyContent;
+    align-items: $alignItems;
+}

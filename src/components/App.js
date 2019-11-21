@@ -6,6 +6,7 @@ import componentsHelpers from './helpers';
 import Header from './Header';
 import Main from './Main';
 import Favorites from './Favorites';
+import '../style/index.scss';
 
 class App extends Component {
     constructor(props){

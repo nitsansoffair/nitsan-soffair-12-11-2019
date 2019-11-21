@@ -17,6 +17,7 @@ const validators = {
 const asyncCalls = {
     fetchSelectedWeather: async(term) => {
         try {
+            // TODO - Add cache fetch for key here
             const { Key, LocalizedName } = await api.getAutocompleteTerm(term);
             const [weatherData, fivedayForecast] = await Promise.all([api.getWeather(Key) ,api.getFivedayForecast(Key)]);
 

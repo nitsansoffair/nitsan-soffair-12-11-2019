@@ -1,6 +1,7 @@
 import NodeCache from 'node-cache';
 import{ DEFAULT_TTL } from './constants';
 
+// TODO - Add term and key to cache
 class Cache {
     constructor(){
         this.cache = new NodeCache({
@@ -31,7 +32,7 @@ class Cache {
 
         return this.cache.set(term, termObject);
     }
-    
+
     getTerms(term){
         const termObject = this.cache.get(term);
 

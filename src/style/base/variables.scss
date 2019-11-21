@@ -1,0 +1,31 @@
+// Font Properties
+$appFontFamily: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+$bold: 700;
+
+// Colors
+$black: rgba(0, 0, 0, 1);
+$white: rgba(255, 255, 255, 1);
+
+// Map Colors
+$colors: (
+        "light": rgba(255, 255, 255, 1),
+        "dark": rgba(0, 0, 0, 1),
+        "gray": rgba(34, 46, 38, .15)
+);
+
+$inputColors: (
+        "base": rgb(34, 36, 38)
+);
+
+$buttonColors: (
+        "lightBase": rgb(255, 255, 255),
+        "darkBase": rgb(0, 0, 0)
+);
+
+// Sizes
+$menuHight: 50px;
+$cardWidth: 250px;
+
+// Flex
+$justifyContentDefault: flex-start;
+$alignItemsDefault: flex-start;

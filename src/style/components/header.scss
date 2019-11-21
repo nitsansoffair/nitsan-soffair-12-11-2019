@@ -1,23 +1,19 @@
-@import '../helpers/colors';
+@import '../base/variables';
+@import '../base/mixins';
 
-//TODO - Use more features of Scss
-* {
-    font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
-}
-
-h1 {
-    text-align: center;
-}
-
-a {
-    color: black;
-    text-decoration: none;
-}
+//TODO - Use more features of Scss -
+//1. Scss shortcat of properties
+//2. Scss mixins
+//3. Scss variables
+//4. Scss functions
+//5. Sass Project Structure
+//6. Migrate all colors to variables
 
 .mainMenu {
-    height: 50px;
-    display: flex;
-    align-items: center;
+    height: $menuHight;
+
+    @include flex(false, $justifyContentDefault, center);
+
     font-size: 16px;
 
     p {
@@ -45,21 +41,11 @@ a {
         }
 
         &.darkToggleButton {
-            background: map-get($colors, "light");
-            color: map-get($colors, "dark");
-
-            &:hover {
-                color: rgba(map-get($buttonColors, "darkBase"), .7);
-            }
+            @include theme("light", "dark", "darkBase");
         }
 
         &.lightToggleButton {
-            background: map-get($colors, "dark");
-            color: map-get($colors, "light");
-
-            &:hover {
-                color: rgba(map-get($buttonColors, "lightBase"), .7);
-            }
+            @include theme("dark", "light", "lightBase");
         }
     }
 
@@ -74,7 +60,7 @@ a {
             }
 
             &.lightLinkItem {
-                color: black;
+                color: $black;
 
                 &.active, &:hover {
                     background: map-get($colors, "gray");
@@ -82,11 +68,11 @@ a {
             }
 
             &.darkLinkItem {
-                color: white;
+                color: $white;
 
                 &.active, &:hover {
-                    color: black;
-                    background: white;
+                    color: $black;
+                    background: $white;
                 }
             }
         }
