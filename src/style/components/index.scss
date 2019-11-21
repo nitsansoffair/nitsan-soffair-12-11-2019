@@ -51,13 +51,21 @@
                 border: 1px solid #d4d4d4;
                 border-top: none;
 
-                &:hover {
-                    background: #e9e9e9;
+                &.lightAutocomplete {
+                    &:hover {
+                        background: #e9e9e9;
+                    }
                 }
 
-                &.autocompleteActive {
+                &.darkAutocomplete {
+                    &:hover {
+                        background: darkgray;
+                    }
+                }
+
+                &.autocompleteActive, &.autocompleteActive:hover {
                     background-color: DodgerBlue;
-                    color: #ffffff;
+                    color: map-get($colors, "light");
                 }
             }
         }

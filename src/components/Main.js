@@ -53,10 +53,11 @@ class Main extends Component {
     }
 
     createAutocompleteElement() {
-        const { autocompleteTerms } = this.props;
+        const { autocompleteTerms, isLight } = this.props;
         const { current: { value } } = this.inputRef;
 
         if(autocompleteTerms && value){
+            const { focusedElemIdx } = this.state;
             let autocompleteElems = [];
             this.autocompleteRefs = [];
 
@@ -67,7 +68,7 @@ class Main extends Component {
                     const ref = React.createRef();
 
                     const autocompletePostfix = autocompleteTerm.substr(value.length, autocompleteTerm.length);
-                    const termDivClasses = `autocompleteItems ${key === 0 ? 'autocompleteActive' : ''}`;
+                    const termDivClasses = `autocompleteItems ${isLight ? 'lightAutocomplete' : 'darkAutocomplete'} ${key === focusedElemIdx ? 'autocompleteActive' : ''}`;
 
                     const termDivElem = (
                         <div
@@ -97,7 +98,7 @@ class Main extends Component {
 
             this.setState({
                 autocompleteElems,
-                focusedElemIdx: 0
+                focusedElemIdx
             });
         }
     }
@@ -117,14 +118,14 @@ class Main extends Component {
     };
 
     onFavoritesClick = () => {
-        const {selectedWeather, favorites} = this.props;
+        const { selectedWeather, favorites } = this.props;
 
         if (componentsHelpers.calculations.isFavorite(selectedWeather, favorites)) {
-            const {deleteFavorite, selectedWeather: {key}} = this.props;
+            const { deleteFavorite, selectedWeather: { key } } = this.props;
 
             deleteFavorite(key);
         } else {
-            const {addFavorite, selectedWeather: {term, name, weatherText, temperatureValue, key}} = this.props;
+            const { addFavorite, selectedWeather: { term, name, weatherText, temperatureValue, key } } = this.props;
             const favorite = {
                 id: key,
                 term,
@@ -155,10 +156,16 @@ class Main extends Component {
 
             switch (key) {
                 case ARROW_UP:
-                    updatedFocusedElemIdx = (focusedElemIdx - 1 + this.autocompleteRefs.length) % this.autocompleteRefs.length;
+                    if(componentsHelpers.validators.exists(focusedElemIdx)){
+                        updatedFocusedElemIdx = (focusedElemIdx - 1 + this.autocompleteRefs.length) % this.autocompleteRefs.length;
+                    }
                     break;
                 case ARROW_DOWN:
-                    updatedFocusedElemIdx = (focusedElemIdx + 1 + this.autocompleteRefs.length) % this.autocompleteRefs.length;
+                    if(componentsHelpers.validators.exists(focusedElemIdx)){
+                        updatedFocusedElemIdx = (focusedElemIdx + 1 + this.autocompleteRefs.length) % this.autocompleteRefs.length;
+                    } else {
+                        updatedFocusedElemIdx = 0;
+                    }
                     break;
                 case ENTER:
                     this.handleAutocompleteClick(autocompleteTerms[focusedElemIdx]);
@@ -188,7 +195,7 @@ class Main extends Component {
             term: value
         });
 
-        // getAutocompleteTerms(value);
+        // value && getAutocompleteTerms(value);
 
         this.createAutocompleteElement();
     };
@@ -207,7 +214,7 @@ class Main extends Component {
     validate = () => {
         const { term } = this.state;
 
-        if(!componentsHelpers.others.validateInput(term)){
+        if(!componentsHelpers.validators.input(term)){
             this.setState({
                 inputError: translations.main.inputError
             });

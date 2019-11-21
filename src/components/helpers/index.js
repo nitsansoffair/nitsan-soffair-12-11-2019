@@ -19,16 +19,20 @@ const styling = {
 },
     calculations = {
         toFahrenheit: (celsius) => (celsius * 9/5) + 32,
-        isFavorite: (selectedWeather, favorites = []) => selectedWeather && favorites.find(({ id }) => id === selectedWeather.key)
-},
+        isFavorite: (selectedWeather, favorites = []) => selectedWeather && favorites.find(({ id }) => id === selectedWeather.key),
+    },
+    validators = {
+        input: (term) => /^[a-zA-Z\s]+$/.test(term),
+        exists: (focusedElemIdx) => focusedElemIdx || focusedElemIdx === 0
+    },
     others = {
-        getTemperature: (isCelsius, temperatureValue) => isCelsius ? temperatureValue : calculations.toFahrenheit(temperatureValue),
-        validateInput: (term) => /^[a-zA-Z\s]+$/.test(term)
+        getTemperature: (isCelsius, temperatureValue) => isCelsius ? temperatureValue : calculations.toFahrenheit(temperatureValue)
 };
 
 export default {
     styling,
     text,
     calculations,
+    validators,
     others
 };
