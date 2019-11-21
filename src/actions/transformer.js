@@ -5,19 +5,19 @@ const weather = ({ WeatherText, Temperature: { Metric: { Value } } }) => ({
     temperatureValue: Math.round(Value)
 }),
     keyAndCity = ({ Key, LocalizedName }) => ({
-    Key,
-    LocalizedName
-}),
+        Key,
+        LocalizedName
+    }),
     forecast = ({ Headline: { Text }, DailyForecasts }) => {
-    const daysWeather = DailyForecasts.map(({ Date, Temperature: { Minimum, Maximum } }) => ({
-        day: actionHelpers.calculations.getDay(Date),
-        temperature: Math.round(actionHelpers.calculations.toCelsius(actionHelpers.calculations.mean(Minimum.Value, Maximum.Value))),
-    }));
+        const daysWeather = DailyForecasts.map(({ Date, Temperature: { Minimum, Maximum } }) => ({
+            day: actionHelpers.calculations.getDay(Date),
+            temperature: Math.round(actionHelpers.calculations.toCelsius(actionHelpers.calculations.mean(Minimum.Value, Maximum.Value))),
+        }));
 
-    return {
-        headline: Text,
-        daysWeather
-    };
+        return {
+            headline: Text,
+            daysWeather
+        };
 },
     geoPositionParams = ({ latitude, longitude }) => `${latitude},${longitude}`;
 

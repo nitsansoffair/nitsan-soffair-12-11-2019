@@ -1,6 +1,7 @@
 import NodeCache from 'node-cache';
 import{ DEFAULT_TTL } from './constants';
 
+// TODO - Add time to Flush
 class Cache {
     constructor(){
         this.cache = new NodeCache({
@@ -11,6 +12,7 @@ class Cache {
 
     getWeather(term){
         const termObject = this.cache.get(term);
+
         if(termObject){
             const { selectedWeather } = termObject;
 
@@ -36,7 +38,7 @@ class Cache {
         const termObject = this.cache.get(term);
 
         if(termObject){
-            const { autocompleteTerms } = termObject
+            const { autocompleteTerms } = termObject;
 
             return autocompleteTerms;
         }

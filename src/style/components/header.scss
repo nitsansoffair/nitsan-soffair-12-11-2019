@@ -1,3 +1,6 @@
+@import '../helpers/colors';
+
+//TODO - Use more features of Scss
 * {
     font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
 }
@@ -38,24 +41,24 @@ a {
         }
 
         &:hover {
-            color: rgba(0, 0, 0, .7);
+            color: rgba(map-get($buttonColors, "darkBase"), .7);
         }
 
         &.darkToggleButton {
-            background: rgba(255, 255, 255, 1);;
-            color: rgba(0, 0, 0, 1);
+            background: map-get($colors, "light");
+            color: map-get($colors, "dark");
 
             &:hover {
-                color: rgba(0, 0, 0, .7);
+                color: rgba(map-get($buttonColors, "darkBase"), .7);
             }
         }
 
         &.lightToggleButton {
-            background: rgba(0, 0, 0, 1);
-            color: rgba(255, 255, 255, 1);
+            background: map-get($colors, "dark");
+            color: map-get($colors, "light");
 
             &:hover {
-                color: rgba(255, 255, 255, .7);
+                color: rgba(map-get($buttonColors, "lightBase"), .7);
             }
         }
     }
@@ -74,7 +77,7 @@ a {
                 color: black;
 
                 &.active, &:hover {
-                    background: rgba(34, 46, 38, .15);
+                    background: map-get($colors, "gray");
                 }
             }
 

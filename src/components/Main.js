@@ -4,11 +4,11 @@ import { fetchWeatherAndForecast, fetchWeatherByGeoposition, getAutocompleteTerm
 import { togglePage } from '../actions/appActions';
 import transformer from '../actions/transformer';
 import componentsHelpers from './helpers';
+import actionHelpers from '../actions/helpers';
 import _ from 'lodash';
-import { TIME_PERIOD } from './constants';
+import { TIME_PERIOD, ARROW_DOWN, ARROW_UP, ENTER, ESCAPE } from './constants';
 import translations from '../data/translations';
-import '../style/index.scss';
-import CacheInstance from "../cache";
+import '../style/components/index.scss';
 
 class Main extends Component {
     constructor(props) {
@@ -22,7 +22,7 @@ class Main extends Component {
     }
 
     componentDidMount() {
-        const {isFirstLoad, onFirstLoad, togglePage, isMainPage} = this.props;
+        const { isFirstLoad, onFirstLoad, togglePage, isMainPage } = this.props;
 
         if (isFirstLoad) {
             // this.fetchGeolocation();
@@ -33,8 +33,19 @@ class Main extends Component {
         !isMainPage && togglePage();
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(prevProps !== this.props){
+            const { current: { value } } = this.inputRef;
+            const { selectedWeather } = this.props;
+
+            if(!selectedWeather || selectedWeather.name !== value){
+                this.createAutocompleteElement();
+            }
+        }
+    }
+
     fetchGeolocation() {
-        const {fetchWeatherByGeoposition} = this.props;
+        const { fetchWeatherByGeoposition } = this.props;
 
         navigator.geolocation.getCurrentPosition(({coords}) => {
             fetchWeatherByGeoposition(transformer.geoPositionParams(coords));
@@ -44,43 +55,66 @@ class Main extends Component {
     createAutocompleteElement() {
         const { autocompleteTerms } = this.props;
         const { current: { value } } = this.inputRef;
-        let autocompleteElems = [];
 
-        // TODO - Validate Cache
-        console.log(
-            CacheInstance.setWeather(value, this.props.selectedWeather),
-            CacheInstance.setTerms(value, autocompleteTerms),
-            CacheInstance.getTerms(value),
-            CacheInstance.getWeather(value)
-        );
+        if(autocompleteTerms && value){
+            let autocompleteElems = [];
+            this.autocompleteRefs = [];
 
-        autocompleteTerms.forEach((autocompleteTerm, key) => {
-            const autocompletePrefix = autocompleteTerm.substr(0, value.length);
+            autocompleteTerms.forEach((autocompleteTerm, key) => {
+                const autocompletePrefix = autocompleteTerm.substr(0, value.length);
 
-            if (value && autocompletePrefix.toUpperCase() === value.toUpperCase()) {
-                const autocompletePostfix = autocompleteTerm.substr(value.length, autocompleteTerm.length);
+                if (autocompletePrefix.toUpperCase() === value.toUpperCase()) {
+                    const ref = React.createRef();
 
-                const termDivElem = (
-                    <div key={key} className="autoCompleteItems"
-                         onClick={_.throttle(() => this.handleAutocompleteClick(autocompleteTerm), TIME_PERIOD)}>
-                        <strong>
-                            {autocompletePrefix}
-                        </strong>
-                        {autocompletePostfix}
-                    </div>
-                );
+                    const autocompletePostfix = autocompleteTerm.substr(value.length, autocompleteTerm.length);
+                    const termDivClasses = `autocompleteItems ${key === 0 ? 'autocompleteActive' : ''}`;
 
-                autocompleteElems = [
-                    ...autocompleteElems,
-                    termDivElem
-                ];
-            }
-        });
+                    const termDivElem = (
+                        <div
+                            key={key}
+                            className={termDivClasses}
+                            onClick={_.throttle(() => this.handleAutocompleteClick(autocompleteTerm), TIME_PERIOD)}
+                            ref={ref}
+                        >
+                            <strong>
+                                {autocompletePrefix}
+                            </strong>
+                            {autocompletePostfix}
+                        </div>
+                    );
 
-        this.setState({
-            autocompleteElems
-        });
+                    this.autocompleteRefs = [
+                        ...this.autocompleteRefs,
+                        ref
+                    ];
+
+                    autocompleteElems = [
+                        ...autocompleteElems,
+                        termDivElem
+                    ];
+                }
+            });
+
+            this.setState({
+                autocompleteElems,
+                focusedElemIdx: 0
+            });
+        }
     }
+
+    closeAutocomplete(){
+        this.setState({
+            autocompleteElems: null,
+            focusedElemIdx: null
+        });
+
+        this.autocompleteRefs = null;
+    }
+
+    updateAutocompleteClasses(focusedElemIdx, updatedFocusedElemIdx){
+        this.autocompleteRefs[focusedElemIdx] && this.autocompleteRefs[focusedElemIdx].current.classList.remove("autocompleteActive");
+        this.autocompleteRefs[updatedFocusedElemIdx] && this.autocompleteRefs[updatedFocusedElemIdx].current.classList.add("autocompleteActive");
+    };
 
     onFavoritesClick = () => {
         const {selectedWeather, favorites} = this.props;
@@ -107,9 +141,44 @@ class Main extends Component {
 
     handleAutocompleteClick = (term) => {
         this.setState({
-            term,
-            autocompleteElems: null
+            term
         });
+
+        this.closeAutocomplete();
+    };
+
+    handleAutocompleteKeys = (key) => {
+        if(actionHelpers.validators.array(this.autocompleteRefs)){
+            const { autocompleteTerms } = this.props;
+            const { focusedElemIdx } = this.state;
+            let updatedFocusedElemIdx;
+
+            switch (key) {
+                case ARROW_UP:
+                    updatedFocusedElemIdx = (focusedElemIdx - 1 + this.autocompleteRefs.length) % this.autocompleteRefs.length;
+                    break;
+                case ARROW_DOWN:
+                    updatedFocusedElemIdx = (focusedElemIdx + 1 + this.autocompleteRefs.length) % this.autocompleteRefs.length;
+                    break;
+                case ENTER:
+                    this.handleAutocompleteClick(autocompleteTerms[focusedElemIdx]);
+                    this.closeAutocomplete();
+
+                    return;
+                case ESCAPE:
+                    this.closeAutocomplete();
+
+                    return;
+                default:
+                    break;
+            }
+
+            this.setState({
+                focusedElemIdx: updatedFocusedElemIdx
+            });
+
+            this.updateAutocompleteClasses(focusedElemIdx, updatedFocusedElemIdx);
+        }
     };
 
     onInputChange = ({ target: { value } }) => {
@@ -119,7 +188,7 @@ class Main extends Component {
             term: value
         });
 
-        getAutocompleteTerms();
+        // getAutocompleteTerms(value);
 
         this.createAutocompleteElement();
     };
@@ -131,7 +200,7 @@ class Main extends Component {
         const { term } = this.state;
 
         if(this.validate()){
-            fetchWeatherAndForecast(term);
+            // fetchWeatherAndForecast(term);
         }
     };
 
@@ -251,7 +320,8 @@ class Main extends Component {
                             type="text"
                             value={term}
                             placeholder={translations.main.inputPlaceholder}
-                            onChange={this.onInputChange}
+                            onChange={_.throttle((e) => this.onInputChange(e), TIME_PERIOD)}
+                            onKeyDown={_.throttle(({ key }) => this.handleAutocompleteKeys(key), TIME_PERIOD)}
                             ref={this.inputRef}
                         />
                         {autocompleteElems}

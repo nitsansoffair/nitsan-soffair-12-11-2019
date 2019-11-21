@@ -18,7 +18,6 @@ const defaultParams = {
     validateStatus: (status => status === STATUS_OK)
 };
 
-// TODO - Validate api correctness
 const weather = axios.create(defaultParams),
     getAutocompleteTerm = async(q) => {
     try {
@@ -29,7 +28,7 @@ const weather = axios.create(defaultParams),
             }
         });
 
-        return transformer.keyAndCity(JSON.parse(data)[0]);
+        return transformer.keyAndCity(data[0]);
     } catch (e) {
         console.log(errorMessages.api.asyncCall(e, 'getAutocomplete'));
 
@@ -70,7 +69,9 @@ const weather = axios.create(defaultParams),
 },
     getWeather = async(cityKey) => {
     try {
-        const { data } = await weather.get(`${CONDITIONS_URL}/${cityKey}`);
+        const { data } = await weather.get(`${CONDITIONS_URL}/${cityKey}`, {
+            params: defaultParams
+        });
 
         return data[0];
     } catch (e) {
@@ -81,9 +82,11 @@ const weather = axios.create(defaultParams),
 },
     getFivedayForecast = async(cityKey) => {
     try {
-        const { data } = await weather.get(`${FORECAST_URL}/${cityKey}`);
+        const { data } = await weather.get(`${FORECAST_URL}/${cityKey}`, {
+            params: defaultParams
+        });
 
-        return transformer.forecast(JSON.parse(data));
+        return transformer.forecast(data);
     } catch (e) {
         console.log(errorMessages.api.asyncCall(e, 'getFivedayForecast'));
 

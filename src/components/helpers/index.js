@@ -13,17 +13,17 @@ const styling = {
     ]
 },
     text = {
-    getTemperatureChar: (isCelsius) => isCelsius ? translations.main.celsiusChar : translations.main.fahrenheitChar,
-    getThemeButtonText: (isLight) => isLight ? translations.header.themeButtonDark : translations.header.themeButtonLight,
-    getTemperatureButtonText: (isCelsius) => isCelsius ? translations.header.temperatureButtonFahrenheit : translations.header.temperatureButtonCelsius
+        getTemperatureChar: (isCelsius) => isCelsius ? translations.main.celsiusChar : translations.main.fahrenheitChar,
+        getThemeButtonText: (isLight) => isLight ? translations.header.themeButtonDark : translations.header.themeButtonLight,
+        getTemperatureButtonText: (isCelsius) => isCelsius ? translations.header.temperatureButtonFahrenheit : translations.header.temperatureButtonCelsius
 },
     calculations = {
-    toFahrenheit: (celsius) => (celsius * 9/5) + 32,
-    isFavorite: (selectedWeather, favorites = []) => selectedWeather && favorites.find(({ id }) => id === selectedWeather.key)
+        toFahrenheit: (celsius) => (celsius * 9/5) + 32,
+        isFavorite: (selectedWeather, favorites = []) => selectedWeather && favorites.find(({ id }) => id === selectedWeather.key)
 },
     others = {
-    getTemperature: (isCelsius, temperatureValue) => isCelsius ? temperatureValue : calculations.toFahrenheit(temperatureValue),
-    validateInput: (term) => /^[a-zA-Z\s]+$/.test(term)
+        getTemperature: (isCelsius, temperatureValue) => isCelsius ? temperatureValue : calculations.toFahrenheit(temperatureValue),
+        validateInput: (term) => /^[a-zA-Z\s]+$/.test(term)
 };
 
 export default {
