@@ -1,36 +1,26 @@
 @import '../base/variables';
 @import '../base/mixins';
 
-//TODO - Use more features of Scss -
-//1. Scss shortcat of properties
-//2. Scss mixins
-//3. Scss variables
-//4. Scss functions
-//5. Sass Project Structure
-//6. Migrate all colors to variables
-
 .mainMenu {
     height: $menuHight;
 
-    @include flex(false, $justifyContentDefault, center);
+    @include flex(false, false, center);
 
-    font-size: 16px;
-
-    p {
-        margin-left: 20px;
-        padding: 5px;
-    }
+    font-size: $fontSizeLarge;
 
     @media (max-width: 650px) {
-        font-size: 12px;
+        font-size: $fontSizeSmall;
+    }
+
+    .slugTitle {
+        p {
+            margin-left: map-get($slugTitle, "marginLeft");
+            padding: map-get($slugTitle, "padding");
+        }
     }
 
     .toggleButton {
-        width: 80px;
-        margin: 0 10px;
-        padding: 8px;
-        cursor: pointer;
-        border: none;
+        @include button($toggleButtonWidth, 0 10px, 8px, none, false);
 
         &:focus {
             outline: none;

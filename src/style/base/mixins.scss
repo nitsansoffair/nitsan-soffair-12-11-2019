@@ -28,6 +28,29 @@
         flex-flow: $flow;
     }
 
-    justify-content: $justifyContent;
-    align-items: $alignItems;
+    @if($justifyContent){
+        justify-content: $justifyContent;
+    }
+
+    @if($alignItems){
+        align-items: $alignItems;
+    }
+}
+
+@mixin button($width, $margin, $padding, $border, $borderRadius){
+    margin: $margin;
+    padding: $padding;
+    cursor: pointer;
+
+    @if($width){
+        width: $width;
+    }
+
+    @if($border){
+        border: $border;
+    }
+
+    @if($borderRadius){
+        border-radius: $borderRadius;
+    }
 }

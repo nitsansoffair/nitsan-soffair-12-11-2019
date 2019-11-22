@@ -10,11 +10,11 @@ import {
     SELECT_WEATHER,
 } from './types';
 
-export const fetchWeatherAndForecast = (term) => async(dispatch) => {
+export const fetchWeatherAndForecast = (term, autocompleteTerms) => async(dispatch) => {
     let selectedWeather = CacheInstance.getWeather(term);
 
     if (!selectedWeather) {
-        selectedWeather = await actionHelpers.asyncCalls.fetchSelectedWeather(term);
+        selectedWeather = await actionHelpers.asyncCalls.fetchSelectedWeather(term, autocompleteTerms);
     }
 
     const weather = actionHelpers.handlers.weather(selectedWeather, 'fetchWeatherAndForecast');

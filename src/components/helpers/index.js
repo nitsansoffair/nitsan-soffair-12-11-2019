@@ -26,7 +26,21 @@ const styling = {
         exists: (focusedElemIdx) => focusedElemIdx || focusedElemIdx === 0
     },
     others = {
-        getTemperature: (isCelsius, temperatureValue) => isCelsius ? temperatureValue : calculations.toFahrenheit(temperatureValue)
+        getTemperature: (isCelsius, temperatureValue) => isCelsius ? temperatureValue : calculations.toFahrenheit(temperatureValue),
+        getKeyAndName: (autocompleteTerms, value) => {
+            if(validators.array(autocompleteTerms)){
+                return autocompleteTerms.find(({ name, key }) => {
+                    if(name === value){
+                        return {
+                            key,
+                            name
+                        };
+                    }
+                });
+            }
+
+            return null;
+        }
 };
 
 export default {

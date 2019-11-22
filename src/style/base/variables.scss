@@ -1,10 +1,17 @@
 // Font Properties
 $appFontFamily: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
 $bold: 700;
+$fontSizeLarge: 16px;
+$fontSizeSmall: 12px;
 
 // Colors
 $black: rgba(0, 0, 0, 1);
 $white: rgba(255, 255, 255, 1);
+$grayBorder: rgba(212, 212, 212, 1);
+$darkGray: rgba(169, 169, 169, 1);
+$blueBackground: rgba(233, 233, 233, 1);
+$dodgerBlue: rgba(30, 144, 255, 1);
+$red: rgba(240, 52, 52, 1);
 
 // Map Colors
 $colors: (
@@ -22,10 +29,23 @@ $buttonColors: (
         "darkBase": rgb(0, 0, 0)
 );
 
+// Slug Title
+$slugTitle: (
+        "marginLeft": 20px,
+        "padding": 5px
+);
+
 // Sizes
 $menuHight: 50px;
 $cardWidth: 250px;
 
-// Flex
-$justifyContentDefault: flex-start;
-$alignItemsDefault: flex-start;
+// Input
+$inputWidthLarge: 400px;
+$inputWidthSmall: 300px;
+$inputHeight: 30px;
+
+// Others
+$toggleButtonWidth: 80px;
+$iconMargin: 5px;
+$singleCityCardMargin: 10px;
+$boxShadow: rgba(207, 0, 15, .2) .5px .5px 5px;

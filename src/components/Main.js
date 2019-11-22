@@ -10,6 +10,8 @@ import { TIME_PERIOD, ARROW_DOWN, ARROW_UP, ENTER, ESCAPE } from './constants';
 import translations from '../data/translations';
 
 class Main extends Component {
+    _isMounted = false;
+
     constructor(props) {
         super(props);
 
@@ -23,6 +25,8 @@ class Main extends Component {
     componentDidMount() {
         const { isFirstLoad, onFirstLoad, togglePage, isMainPage } = this.props;
 
+        this._isMounted = true;
+
         if (isFirstLoad) {
             // this.fetchGeolocation();
 
@@ -33,7 +37,9 @@ class Main extends Component {
     }
 
     componentWillUnmount() {
-        document.removeEventListener('click', _.throttle(() => this.closeAutocomplete(), TIME_PERIOD));
+        this.closeAutocomplete();
+
+        this._isMounted = false;
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -64,20 +70,20 @@ class Main extends Component {
             let autocompleteElems = [];
             this.autocompleteRefs = [];
 
-            autocompleteTerms.forEach((autocompleteTerm, key) => {
-                const autocompletePrefix = autocompleteTerm.substr(0, value.length);
+            autocompleteTerms.forEach(({ name, key } ) => {
+                const autocompletePrefix = name.substr(0, value.length);
 
                 if (autocompletePrefix.toUpperCase() === value.toUpperCase()) {
                     const ref = React.createRef();
 
-                    const autocompletePostfix = autocompleteTerm.substr(value.length, autocompleteTerm.length);
+                    const autocompletePostfix = name.substr(value.length, name.length);
                     const termDivClasses = `autocompleteItems ${isLight ? 'lightAutocomplete' : 'darkAutocomplete'} ${key === focusedElemIdx ? 'autocompleteActive' : ''}`;
 
                     const termDivElem = (
                         <div
                             key={key}
                             className={termDivClasses}
-                            onClick={_.throttle(() => this.handleAutocompleteClick(autocompleteTerm), TIME_PERIOD)}
+                            onClick={_.throttle(() => this.handleAutocompleteClick(name), TIME_PERIOD)}
                             ref={ref}
                         >
                             <strong>
@@ -99,7 +105,7 @@ class Main extends Component {
                 }
             });
 
-            this.setState({
+            this.safeSetState({
                 autocompleteElems,
                 focusedElemIdx
             });
@@ -109,7 +115,7 @@ class Main extends Component {
     }
 
     closeAutocomplete(){
-        this.setState({
+        this.safeSetState({
             autocompleteElems: null,
             focusedElemIdx: null
         });
@@ -122,6 +128,10 @@ class Main extends Component {
     updateAutocompleteClasses(focusedElemIdx, updatedFocusedElemIdx){
         this.autocompleteRefs[focusedElemIdx] && this.autocompleteRefs[focusedElemIdx].current.classList.remove("autocompleteActive");
         this.autocompleteRefs[updatedFocusedElemIdx] && this.autocompleteRefs[updatedFocusedElemIdx].current.classList.add("autocompleteActive");
+    };
+
+    safeSetState(newState){
+        this._isMounted && this.setState(newState);
     };
 
     onFavoritesClick = () => {
@@ -148,7 +158,7 @@ class Main extends Component {
     };
 
     handleAutocompleteClick = (term) => {
-        this.setState({
+        this.safeSetState({
             term
         });
 
@@ -188,7 +198,7 @@ class Main extends Component {
                     return;
             }
 
-            this.setState({
+            this.safeSetState({
                 focusedElemIdx: updatedFocusedElemIdx
             });
 
@@ -199,7 +209,7 @@ class Main extends Component {
     onInputChange = ({ target: { value } }) => {
         const { getAutocompleteTerms } = this.props;
 
-        this.setState({
+        this.safeSetState({
             term: value
         });
 
@@ -213,24 +223,24 @@ class Main extends Component {
     onFormSubmit = (event) => {
         event.preventDefault();
 
-        const { fetchWeatherAndForecast } = this.props;
+        const { fetchWeatherAndForecast, autocompleteTerms } = this.props;
         const { current: { value } } = this.inputRef;
 
         if(value && this.validate(value)){
-            // fetchWeatherAndForecast(term);
+            fetchWeatherAndForecast(value, autocompleteTerms);
         }
     };
 
     validate = (term) => {
         if(!componentsHelpers.validators.input(term)){
-            this.setState({
+            this.safeSetState({
                 inputError: translations.main.inputError
             });
 
             return false;
         }
 
-        this.setState({
+        this.safeSetState({
             inputError: false
         });
 

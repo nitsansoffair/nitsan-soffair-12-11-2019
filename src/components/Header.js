@@ -58,7 +58,9 @@ class Header extends Component {
 
         return (
             <div className="mainMenu">
-                <p>{translations.header.slugText}</p>
+                <div className="slugTitle">
+                    <p>{translations.header.slugText}</p>
+                </div>
                 <button className={themeButtonClasses} onClick={this.handleToggleTheme}>
                     {componentsHelpers.text.getThemeButtonText(isLight)}
                 </button>

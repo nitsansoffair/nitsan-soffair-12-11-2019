@@ -9,7 +9,7 @@ import {
 import mock from '../data/mock';
 
 const defaultState = {
-    ...mock
+    // ...mock
 };
 
 export default (state = defaultState, action) => {

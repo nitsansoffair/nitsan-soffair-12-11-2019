@@ -44,7 +44,10 @@ const weather = axios.create(defaultParams),
                 }
             });
 
-            return data.map(({ LocalizedName }) => LocalizedName);
+            return data.map(({ LocalizedName, Key }) => ({
+                name: LocalizedName,
+                key: Key
+            }));
         } catch (e) {
             console.log(errorMessages.api.asyncCall(e, 'getAutocompleteTerms'));
 
