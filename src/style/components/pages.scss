@@ -26,6 +26,10 @@
     form {
         @include flex(column, center, center);
 
+        i {
+            margin-right: $iconMargin;
+        }
+
         .autocompleteInput {
             @include flex(column, false, false);
 
@@ -35,16 +39,16 @@
                 margin-top: 10px;
                 padding: 5px;
 
-                border: 1px solid rgba(map-get($inputColors, "base"), .15) {
+                border: 1px solid rgba($baseInputBorderColor, .15) {
                     radius: .2rem;
                 }
 
                 &:focus {
                     outline: none;
-                    border: 1px solid rgba(map-get($inputColors, "base"), .30);
+                    border: 1px solid rgba($baseInputBorderColor, .30);
                 }
 
-                @media (max-width: $medium) {
+                @media (max-width: map-get($media, "medium")) {
                     width: $inputWidthSmall;
                 }
             }
@@ -54,27 +58,19 @@
                     top: none;
                 }
 
-                &.lightAutocomplete {
-                    &:hover {
-                        background: $blueBackground;
-                    }
+                &.lightAutocomplete:hover {
+                    background: $blueBackground;
                 }
 
-                &.darkAutocomplete {
-                    &:hover {
-                        background: $darkGray;
-                    }
+                &.darkAutocomplete:hover {
+                    background: $darkGray;
                 }
 
                 &.autocompleteActive, &.autocompleteActive:hover {
                     background-color: $dodgerBlue;
-                    color: map-get($colors, "light");
+                    color: $white;
                 }
             }
-        }
-
-        i {
-            margin-right: $iconMargin;
         }
 
         .errorToast {
@@ -122,14 +118,14 @@
             }
 
             &.darkFavoritesButton {
-                @include favoriteButtonTheme("darkBase", "light", "lightBase");
+                @include favoriteButtonTheme("darkBase", $white, "lightBase");
             }
 
             &.lightFavoritesButton {
-                @include favoriteButtonTheme("lightBase", "dark", "darkBase");
+                @include favoriteButtonTheme("lightBase", $black, "darkBase");
             }
 
-            @media (max-width: $small) {
+            @media (max-width: map-get($media, "small")) {
                 padding: 5px;
             }
         }
@@ -159,6 +155,7 @@
 
             .favoriteHeader {
                 margin-bottom: 10px;
+
                 @include flex(column wrap, false, center);
             }
 
@@ -168,7 +165,7 @@
         }
     }
 
-    @media (max-width: $verySmall){
+    @media (max-width: map-get($media, "verySmall")){
         min-width: 110vw;
     }
 }

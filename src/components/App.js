@@ -14,6 +14,8 @@ class App extends Component {
         this.state = {
             isFirstLoad: true
         };
+
+        this.containerRef = React.createRef();
     }
 
     onFirstLoad = () => {
@@ -29,11 +31,11 @@ class App extends Component {
         const containerClasses = componentsHelpers.styling.getContainerClass(isLight);
 
         return (
-            <div className={containerClasses}>
+            <div className={containerClasses} ref={this.containerRef}>
                 <BrowserRouter>
                     <Header/>
                     <Switch>
-                        <Route path="/" exact render={() => (<Main isFirstLoad={isFirstLoad} onFirstLoad={this.onFirstLoad}/>)}/>
+                        <Route path="/" exact render={() => (<Main isFirstLoad={isFirstLoad} onFirstLoad={this.onFirstLoad} containerRef={this.containerRef.current}/>)}/>
                         <Route path="/favorites" exact render={() => (<Favorites/>)}/>
                     </Switch>
                 </BrowserRouter>

@@ -8,6 +8,7 @@ import {
 } from '../actions/types';
 import mock from '../data/mock';
 
+// TODO - remove mock from here
 const defaultState = {
     ...mock
 };

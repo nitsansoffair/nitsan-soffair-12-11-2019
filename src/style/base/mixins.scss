@@ -1,39 +1,23 @@
-@import "variables";
+@import 'variables';
 
 // Themes
 @mixin theme($backgroundColor, $color, $hoverColor){
-    background: map-get($colors, $backgroundColor);
-    color: map-get($colors, $color);
+    background: $backgroundColor;
+    color: $color;
 
     &:hover {
         color: rgba(map-get($buttonColors, $hoverColor), .7);
     }
 }
 
+// Buttons
 @mixin favoriteButtonTheme($backgroundColor, $color, $hoverColor){
     background: rgba(map-get($buttonColors, $backgroundColor), .8);
-    color: map-get($colors, $color);
-    border: 1px solid map-get($colors, $color);
+    color: $color;
+    border: 1px solid $color;
 
     &:hover {
         color: rgba(map-get($buttonColors, $hoverColor), .7);
-    }
-}
-
-// Others
-@mixin flex($flow, $justifyContent, $alignItems: flex-start){
-    display: flex;
-
-    @if $flow {
-        flex-flow: $flow;
-    }
-
-    @if($justifyContent){
-        justify-content: $justifyContent;
-    }
-
-    @if($alignItems){
-        align-items: $alignItems;
     }
 }
 
@@ -52,5 +36,22 @@
 
     @if($borderRadius){
         border-radius: $borderRadius;
+    }
+}
+
+// Others
+@mixin flex($flow, $justifyContent, $alignItems: flex-start){
+    display: flex;
+
+    @if $flow {
+        flex-flow: $flow;
+    }
+
+    @if($justifyContent){
+        justify-content: $justifyContent;
+    }
+
+    @if($alignItems){
+        align-items: $alignItems;
     }
 }

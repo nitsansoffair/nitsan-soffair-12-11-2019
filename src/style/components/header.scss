@@ -6,7 +6,7 @@
 
     @include flex(false, false, center);
 
-    font-size: $fontSizeLarge;
+    font-size: map-get($fontSize, "large");
 
     .slugTitle {
         p {
@@ -18,20 +18,20 @@
     .toggleButton {
         @include button($toggleButtonWidth, 0 10px, 8px, none, false);
 
-        &:focus {
-            outline: none;
-        }
-
         &:hover {
             color: rgba(map-get($buttonColors, "darkBase"), .7);
         }
 
+        &:focus {
+            outline: none;
+        }
+
         &.darkToggleButton {
-            @include theme("light", "dark", "darkBase");
+            @include theme($white, $black, "darkBase");
         }
 
         &.lightToggleButton {
-            @include theme("dark", "light", "lightBase");
+            @include theme($black, $white, "lightBase");
         }
     }
 
@@ -44,27 +44,27 @@
             &.lightLinkItem {
                 color: $black;
 
-                &.active, &:hover {
-                    background: map-get($colors, "gray");
+                &:hover, &.active {
+                    background: $lightGray;
                 }
             }
 
             &.darkLinkItem {
                 color: $white;
 
-                &.active, &:hover {
+                &:hover, &.active {
                     color: $black;
                     background: $white;
                 }
             }
 
-            @media (max-width: $medium) {
+            @media (max-width: map-get($media, "medium")) {
                 padding: 1.1rem;
             }
         }
     }
 
-    @media (max-width: $medium) {
-        font-size: $fontSizeSmall;
+    @media (max-width: map-get($media, "medium")) {
+        font-size: map-get($fontSize, "small");
     }
 }

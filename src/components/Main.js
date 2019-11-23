@@ -10,6 +10,8 @@ import { TIME_PERIOD, ARROW_DOWN, ARROW_UP, ENTER, ESCAPE } from './constants';
 import translations from '../data/translations';
 
 class Main extends Component {
+    // TODO - Un comment fetch calls
+
     _isMounted = false;
 
     constructor(props) {
@@ -62,7 +64,7 @@ class Main extends Component {
     }
 
     createAutocompleteElement() {
-        const { autocompleteTerms, isLight } = this.props;
+        const { autocompleteTerms, isLight, containerRef } = this.props;
         const { current: { value } } = this.inputRef;
 
         if(autocompleteTerms && value){
@@ -110,11 +112,13 @@ class Main extends Component {
                 focusedElemIdx
             });
 
-            document.addEventListener('click', this.throttledCloseAutocomplete);
+            containerRef.addEventListener('click', this.throttledCloseAutocomplete);
         }
     }
 
-    closeAutocomplete(setState = true){
+    closeAutocomplete = (setState = true) => {
+        const { containerRef } = this.props;
+
         if(setState){
             this.safeSetState({
                 autocompleteElems: null,
@@ -124,8 +128,8 @@ class Main extends Component {
 
         this.autocompleteRefs = null;
 
-        document.removeEventListener('click', this.throttledCloseAutocomplete);
-    }
+        containerRef.removeEventListener('click', this.throttledCloseAutocomplete);
+    };
 
     updateAutocompleteClasses(focusedElemIdx, updatedFocusedElemIdx){
         this.autocompleteRefs[focusedElemIdx] && this.autocompleteRefs[focusedElemIdx].current.classList.remove("autocompleteActive");
@@ -223,7 +227,7 @@ class Main extends Component {
         });
 
         if(value && this.validate(value)){
-            getAutocompleteTerms(value);
+            // getAutocompleteTerms(value);
             this.createAutocompleteElement();
         }
 
@@ -236,7 +240,7 @@ class Main extends Component {
         const { current: { value } } = this.inputRef;
 
         if(value && this.validate(value)){
-            fetchWeatherAndForecast(value, autocompleteTerms);
+            // fetchWeatherAndForecast(value, autocompleteTerms);
         }
     };
 
