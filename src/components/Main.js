@@ -10,8 +10,6 @@ import { TIME_PERIOD, ARROW_DOWN, ARROW_UP, ENTER, ESCAPE } from './constants';
 import translations from '../data/translations';
 
 class Main extends Component {
-    // TODO - Un comment fetch calls
-
     _isMounted = false;
 
     constructor(props) {
@@ -30,7 +28,7 @@ class Main extends Component {
         this._isMounted = true;
 
         if (isFirstLoad) {
-            // this.fetchGeolocation();
+            this.fetchGeolocation();
 
             onFirstLoad();
         }
@@ -227,7 +225,7 @@ class Main extends Component {
         });
 
         if(value && this.validate(value)){
-            // getAutocompleteTerms(value);
+            getAutocompleteTerms(value);
             this.createAutocompleteElement();
         }
 
@@ -240,7 +238,7 @@ class Main extends Component {
         const { current: { value } } = this.inputRef;
 
         if(value && this.validate(value)){
-            // fetchWeatherAndForecast(value, autocompleteTerms);
+            fetchWeatherAndForecast(value, autocompleteTerms);
         }
     };
 

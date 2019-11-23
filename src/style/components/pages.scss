@@ -34,8 +34,8 @@
             @include flex(column, false, false);
 
             input {
-                width: $inputWidthLarge;
-                height: $inputHeight;
+                width: map-get($input, "widthLarge");
+                height: map-get($input, "height");
                 margin-top: 10px;
                 padding: 5px;
 
@@ -49,7 +49,7 @@
                 }
 
                 @media (max-width: map-get($media, "medium")) {
-                    width: $inputWidthSmall;
+                    width: map-get($input, "widthSmall");
                 }
             }
 

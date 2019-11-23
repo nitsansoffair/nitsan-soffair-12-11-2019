@@ -1,7 +1,6 @@
 export default {
     api: {
         fetchWeather: (errorLocation) => `Error fetch selected weather occurred at ${errorLocation} function.`,
-        fetchGeoposition: (errorLocation) => `Error fetch current weather occurred at ${errorLocation} function.`,
         asyncCall: ({ message }, errorLocation) => `Async call error - ${message} occurred at ${errorLocation} function.`,
     },
     cache: {
@@ -9,7 +8,6 @@ export default {
     },
     other: {
         setError: (errorLocation) => `Error at set weather occurred at ${errorLocation} function.`,
-        getError: (errorLocation) => `Error at get weather occurred at ${errorLocation} function.`,
     },
     defaultError: {
         error: "Internal server error."

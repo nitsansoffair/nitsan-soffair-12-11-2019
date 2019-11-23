@@ -1,5 +1,3 @@
-//TODO - Separate concerns to maps
-
 // Font Properties
 $appFontFamily: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
 $bold: 700;
@@ -11,6 +9,7 @@ $fontSize: (
 );
 
 // Colors
+$baseInputBorderColor: rgb(34, 36, 38);
 $black: rgba(0, 0, 0, 1);
 $white: rgba(255, 255, 255, 1);
 $grayBorder: rgba(212, 212, 212, 1);
@@ -19,8 +18,6 @@ $darkGray: rgba(169, 169, 169, 1);
 $blueBackground: rgba(233, 233, 233, 1);
 $dodgerBlue: rgba(30, 144, 255, 1);
 $red: rgba(240, 52, 52, 1);
-
-$baseInputBorderColor: rgb(34, 36, 38);
 
 // Map Colors
 $buttonColors: (
@@ -39,9 +36,11 @@ $menuHight: 50px;
 $cardWidth: 250px;
 
 // Input
-$inputWidthLarge: 400px;
-$inputWidthSmall: 342px;
-$inputHeight: 30px;
+$input: (
+        "widthLarge": 400px,
+        "widthSmall": 342px,
+        "height": 30px
+);
 
 // Media
 $media: (

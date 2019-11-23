@@ -18,7 +18,7 @@ export const fetchWeatherAndForecast = (term, autocompleteTerms) => async(dispat
     });
 },
     fetchWeatherByGeoposition = (q) => async(dispatch) => {
-        let currentWeather = await actionHelpers.asyncCalls.fetchCurrentWeather(q);
+        const currentWeather = await actionHelpers.asyncCalls.fetchCurrentWeather(q);
 
         dispatch({
             type: FETCH_CURRENT_WEATHER,
