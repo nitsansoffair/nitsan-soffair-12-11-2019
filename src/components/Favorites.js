@@ -4,6 +4,8 @@ import { selectWeather } from '../actions/weatherActions';
 import { togglePage } from '../actions/appActions';
 import { Link } from 'react-router-dom';
 import componentsHelpers from './helpers';
+import _ from 'lodash';
+import { TIME_PERIOD } from './constants';
 
 class Favorites extends Component {
     componentDidMount() {
@@ -12,10 +14,10 @@ class Favorites extends Component {
         togglePage();
     }
 
-    handleFavorite = (term) => {
+    handleFavorite = (id) => {
         const { selectWeather } = this.props;
 
-        selectWeather(term);
+        selectWeather(id);
     };
 
     render() {
@@ -25,10 +27,10 @@ class Favorites extends Component {
 
         return (
             <div className="cardsContainer">
-                {favorites.map(({ id, term, name, currentWeather: { weatherText, temperatureValue } }) => (
+                {favorites.map(({ id, name, currentWeather: { weatherText, temperatureValue } }) => (
                     <div key={id} className="cardItem">
                         <div className="favoriteHeader">
-                            <Link to="/" onClick={() => this.handleFavorite(term)}>
+                            <Link to="/" onClick={_.throttle(() => this.handleFavorite(id), TIME_PERIOD)}>
                                 <h3>{name}</h3>
                             </Link>
                             <h3>{componentsHelpers.others.getTemperature(isCelsius, temperatureValue)}&#176; {temperatureChar}</h3>

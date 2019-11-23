@@ -1,7 +1,6 @@
 import api from '../apis';
 import CacheInstance from '../cache';
 import transformer from './transformer';
-import componentHelpers from '../components/helpers';
 import { days } from '../data/days';
 import errorMessages from '../data/errorMessages';
 
@@ -16,102 +15,88 @@ const validators = {
 };
 
 const asyncCalls = {
-    getKeyAndName: async(term, autocompleteTerms) => {
-        if(validators.array(autocompleteTerms)){
-            console.log('got terms from store!');
-            return autocompleteTerms[0];
+    fetchSelectedWeather: async (term, autocompleteTerms) => {
+        const keysAndNames = await asyncCalls.getKeyAndName(term, autocompleteTerms);
+
+        if(keysAndNames && keysAndNames.error){
+            return keysAndNames;
+        }
+
+        let founded = keysAndNames.find(({ name }) => name.toString() === term.toString());
+
+        if(!founded){
+            founded = keysAndNames[0];
+        }
+
+        return await asyncCalls.fetchWeather(founded.key, founded.name);
+    },
+    fetchCurrentWeather: async (q) => {
+        const { key, name } = await api.getGeoposition(q);
+
+        return await asyncCalls.fetchWeather(key, name);
+    },
+    fetchAutocomplete: async(q) => {
+        const cachedTerms = CacheInstance.getTerms(q);
+
+        if(cachedTerms){
+            return cachedTerms;
+        }
+
+        const fetchedTerms = await api.getAutocompleteTerms(q);
+
+        if(validators.array(fetchedTerms)){
+            CacheInstance.setTerms(q, fetchedTerms);
+        }
+
+        return fetchedTerms;
+    },
+    fetchWeather: async (key, name) => {
+        const cachedWeather = CacheInstance.getWeather(key);
+
+        if (cachedWeather) {
+            return cachedWeather;
+        }
+
+        const [weatherData, fivedayForecast] = await Promise.all([api.getWeather(key), api.getFivedayForecast(key)]);
+
+        if(!weatherData || !fivedayForecast){
+            return errorMessages.defaultError;
+        }
+
+        const fetchedWeather = {
+            key,
+            ...transformer.weather(weatherData),
+            name,
+            fivedayForecast
+        };
+
+        CacheInstance.setWeather(key, fetchedWeather);
+
+        return fetchedWeather;
+    },
+    getKeyAndName: async (term, autocompleteTerms) => {
+        if (validators.array(autocompleteTerms)) {
+            return autocompleteTerms;
         }
 
         const cachedTerms = CacheInstance.getTerms(term);
 
-        if(cachedTerms){
-            console.log('got terms from cache!');
-            return cachedTerms[0];
+        if (cachedTerms) {
+            return cachedTerms;
         }
 
         const apiTerms = await api.getAutocompleteTerms(term);
 
-        if(apiTerms){
+        if (validators.array(apiTerms)) {
             CacheInstance.setTerms(term, apiTerms);
-            console.log(apiTerms, 'set terms at cache!');
-
-            return apiTerms[0];
         }
 
-        throw Error(errorMessages.other.getError('getKeyAndName'));
-    },
-    fetchSelectedWeather: async(term, autocompleteTerms) => {
-        try {
-            const { key, name } = await asyncCalls.getKeyAndName(term, autocompleteTerms);
-            const [weatherData, fivedayForecast] = await Promise.all([api.getWeather(key) ,api.getFivedayForecast(key)]);
-
-            return {
-                key,
-                term,
-                ...transformer.weather(weatherData),
-                name,
-                fivedayForecast
-            };
-        } catch (e) {
-            console.log(errorMessages.api.fetchWeather('fetchSelectedWeather'));
-
-            return null;
-        }
-    },
-    fetchCurrentWeather: async(q) => {
-        try {
-            const { Key, LocalizedName } = await api.getGeoposition(q);
-            const [weatherData, fivedayForecast] = await Promise.all([api.getWeather(Key) ,api.getFivedayForecast(Key)]);
-
-            return {
-                key: Key,
-                term: LocalizedName,
-                ...transformer.weather(weatherData),
-                name: LocalizedName,
-                fivedayForecast
-            };
-        } catch (e) {
-            console.log(errorMessages.api.fetchGeoposition('fetchCurrentWeather'));
-
-            return null;
-        }
-    }
-};
-
-const handlers = {
-    weather: (weatherParam, errLocation) => {
-        let weather = weatherParam;
-
-        if(!weather){
-            console.log(errorMessages.other.setError(errLocation));
-
-            weather = {
-                error: errorMessages.other.internalServerError
-            };
-        } else {
-            CacheInstance.setWeather(weather.term, weather);
-        }
-
-        return weather;
-    },
-    autocomplete: (term, autocompleteTerms) => {
-        if(autocompleteTerms){
-            CacheInstance.setTerms(term, autocompleteTerms);
-        } else {
-            console.log(errorMessages.api.asyncCall('Error empty autocomplete term', 'getAutocompleteTerm'));
-
-            autocompleteTerms = {
-                error: errorMessages.other.internalServerError
-            };
-        }
-
-        return autocompleteTerms;
+        return apiTerms;
     }
 };
 
 export default {
     calculations,
     asyncCalls,
-    validators,
-    handlers
+    validators
 };

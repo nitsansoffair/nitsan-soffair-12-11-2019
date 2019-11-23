@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { toggleTheme, toggleTemperature } from '../actions/appActions';
 import { Link } from 'react-router-dom';
 import componentsHelpers from './helpers';
+import _ from 'lodash';
+import { TIME_PERIOD } from './constants';
 import translations from '../data/translations';
 
 class Header extends Component {
@@ -61,10 +63,10 @@ class Header extends Component {
                 <div className="slugTitle">
                     <p>{translations.header.slugText}</p>
                 </div>
-                <button className={themeButtonClasses} onClick={this.handleToggleTheme}>
+                <button className={themeButtonClasses} onClick={_.throttle(this.handleToggleTheme, TIME_PERIOD)}>
                     {componentsHelpers.text.getThemeButtonText(isLight)}
                 </button>
-                <button className="toggleButton" onClick={this.handleToggleTemperature}>
+                <button className="toggleButton" onClick={_.throttle(this.handleToggleTemperature, TIME_PERIOD)}>
                     {componentsHelpers.text.getTemperatureButtonText(isCelsius)}
                 </button>
                 <div className="rightMenu">

@@ -9,49 +9,28 @@ class Cache {
         });
     }
 
-    getWeather(term){
-        const termObject = this.cache.get(term);
-
-        if(termObject){
-            const { selectedWeather } = termObject;
-
-            return selectedWeather;
-        }
-
-        return null;
+    getWeather(key){
+        return this.cache.get(key);
     }
 
-    setWeather(term, selectedWeather){
-        let termObject = this.cache.get(term);
-
-        termObject = {
-            ...termObject,
-            selectedWeather
-        };
-
-        return this.cache.set(term, termObject);
+    setWeather(key, selectedWeather){
+        return this.cache.set(key, selectedWeather);
     }
 
-    getTerms(term){
-        const termObject = this.cache.get(term);
-
-        if(termObject){
-            const { autocompleteTerms } = termObject;
-
-            return autocompleteTerms;
-        }
-
-        return null;
+    getTerms(q){
+        return this.cache.get(q);
     }
 
-    setTerms(term, autocompleteTerms){
-        let termObject = this.cache.get(term);
-        termObject = {
-            ...termObject,
-            autocompleteTerms
-        };
+    setTerms(q, autocompleteTerms){
+        return this.cache.set(q, autocompleteTerms);
+    }
 
-        return this.cache.set(term, termObject);
+    getTermsByCoords(q){
+        return this.cache.get(q);
+    }
+
+    setTermsWithCoords(q, terms){
+        return this.cache.set(q, terms);
     }
 }
 

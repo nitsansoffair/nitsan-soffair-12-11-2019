@@ -1,0 +1,18 @@
+@import '../base/variables';
+
+* {
+    font-family: $appFontFamily;
+}
+
+h1 {
+    text-align: center;
+
+    @media (max-width: $verySmall){
+        font-size: $h1FontSizeSmall;
+    }
+}
+
+a {
+    color: $black;
+    text-decoration: none;
+}

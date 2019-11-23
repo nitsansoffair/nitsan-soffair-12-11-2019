@@ -79,5 +79,22 @@ export default {
             }
         },
     ],
-    autocompleteTerms:  ["Afghanistan", "Albania", "Algeria", "Andorra"]
+    autocompleteTerms:  [
+        {
+            name: "Afghanistan",
+            key: 1
+        },
+        {
+            name: "Albania",
+            key: 2
+        },
+        {
+            name: "Algeria",
+            key: 3
+        },
+        {
+            name: "Andorra",
+            key: 4
+        }
+    ]
 };

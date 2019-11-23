@@ -1,4 +1,3 @@
-import api from '../apis';
 import CacheInstance from '../cache';
 import actionHelpers from './helpers';
 import {
@@ -11,36 +10,24 @@ import {
 } from './types';
 
 export const fetchWeatherAndForecast = (term, autocompleteTerms) => async(dispatch) => {
-    let selectedWeather = CacheInstance.getWeather(term);
-
-    if (!selectedWeather) {
-        selectedWeather = await actionHelpers.asyncCalls.fetchSelectedWeather(term, autocompleteTerms);
-    }
-
-    const weather = actionHelpers.handlers.weather(selectedWeather, 'fetchWeatherAndForecast');
+    const selectedWeather = await actionHelpers.asyncCalls.fetchSelectedWeather(term, autocompleteTerms);
 
     dispatch({
         type: FETCH_WEATHER_AND_FORECAST,
-        payload: weather
+        payload: selectedWeather
     });
 },
     fetchWeatherByGeoposition = (q) => async(dispatch) => {
         let currentWeather = await actionHelpers.asyncCalls.fetchCurrentWeather(q);
-        const weather = actionHelpers.handlers.weather(currentWeather, 'fetchWeatherByGeoposition');
 
         dispatch({
             type: FETCH_CURRENT_WEATHER,
-            payload: weather
+            payload: currentWeather
         });
 },
     getAutocompleteTerms = (term) => async(dispatch) => {
-        let autocompleteTerms = CacheInstance.getTerms(term);
+        const autocompleteTerms = await actionHelpers.asyncCalls.fetchAutocomplete(term);
 
-        if(!autocompleteTerms){
-            autocompleteTerms = await api.getAutocompleteTerms(term);
-        }
-
-        autocompleteTerms = actionHelpers.handlers.autocomplete(term, autocompleteTerms);
         dispatch({
             type: FETCH_AUTOCOMPLETE_TERMS,
             payload: autocompleteTerms

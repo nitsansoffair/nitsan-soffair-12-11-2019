@@ -10,6 +10,8 @@ export default {
     other: {
         setError: (errorLocation) => `Error at set weather occurred at ${errorLocation} function.`,
         getError: (errorLocation) => `Error at get weather occurred at ${errorLocation} function.`,
-        internalServerError: "Internal server error."
+    },
+    defaultError: {
+        error: "Internal server error."
     }
 };

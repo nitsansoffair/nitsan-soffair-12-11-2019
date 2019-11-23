@@ -110,19 +110,21 @@ class Main extends Component {
                 focusedElemIdx
             });
 
-            document.addEventListener('click', _.throttle(() => this.closeAutocomplete(), TIME_PERIOD));
+            document.addEventListener('click', this.throttledCloseAutocomplete);
         }
     }
 
-    closeAutocomplete(){
-        this.safeSetState({
-            autocompleteElems: null,
-            focusedElemIdx: null
-        });
+    closeAutocomplete(setState = true){
+        if(setState){
+            this.safeSetState({
+                autocompleteElems: null,
+                focusedElemIdx: null
+            });
+        }
 
         this.autocompleteRefs = null;
 
-        document.removeEventListener('click', _.throttle(() => this.closeAutocomplete(), TIME_PERIOD));
+        document.removeEventListener('click', this.throttledCloseAutocomplete);
     }
 
     updateAutocompleteClasses(focusedElemIdx, updatedFocusedElemIdx){
@@ -157,15 +159,21 @@ class Main extends Component {
         }
     };
 
+    throttledCloseAutocomplete = _.throttle(this.closeAutocomplete, TIME_PERIOD);
+
     handleAutocompleteClick = (term) => {
         this.safeSetState({
-            term
+            term,
+            autocompleteElems: null,
+            focusedElemIdx: null
         });
 
-        this.closeAutocomplete();
+        this.closeAutocomplete(false);
     };
 
-    handleAutocompleteKeys = (key) => {
+    handleAutocompleteKeys = (e) => {
+        const key = e.key;
+
         if(actionHelpers.validators.array(this.autocompleteRefs)){
             const { autocompleteTerms } = this.props;
             const { focusedElemIdx } = this.state;
@@ -187,7 +195,7 @@ class Main extends Component {
                     }
                     break;
                 case ENTER:
-                    this.handleAutocompleteClick(autocompleteTerms[focusedElemIdx]);
+                    this.handleAutocompleteClick(autocompleteTerms[focusedElemIdx].name);
 
                     return;
                 case ESCAPE:
@@ -206,15 +214,16 @@ class Main extends Component {
         }
     };
 
-    onInputChange = ({ target: { value } }) => {
+    onInputChange = ({ target }) => {
         const { getAutocompleteTerms } = this.props;
+        const value = target.value;
 
         this.safeSetState({
             term: value
         });
 
         if(value && this.validate(value)){
-            // getAutocompleteTerms(value);
+            getAutocompleteTerms(value);
             this.createAutocompleteElement();
         }
 
@@ -346,7 +355,7 @@ class Main extends Component {
                             value={term}
                             placeholder={translations.main.inputPlaceholder}
                             onChange={_.throttle((e) => this.onInputChange(e), TIME_PERIOD)}
-                            onKeyDown={_.throttle(({ key }) => this.handleAutocompleteKeys(key), TIME_PERIOD)}
+                            onKeyDown={_.throttle((e) => this.handleAutocompleteKeys(e), TIME_PERIOD)}
                             ref={this.inputRef}
                         />
                         {autocompleteElems}

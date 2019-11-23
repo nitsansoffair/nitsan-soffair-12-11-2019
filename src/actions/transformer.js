@@ -4,10 +4,6 @@ const weather = ({ WeatherText, Temperature: { Metric: { Value } } }) => ({
     weatherText: WeatherText,
     temperatureValue: Math.round(Value)
 }),
-    keyAndCity = ({ Key, LocalizedName }) => ({
-        Key,
-        LocalizedName
-    }),
     forecast = ({ Headline: { Text }, DailyForecasts }) => {
         const daysWeather = DailyForecasts.map(({ Date, Temperature: { Minimum, Maximum } }) => ({
             day: actionHelpers.calculations.getDay(Date),
@@ -23,7 +19,6 @@ const weather = ({ WeatherText, Temperature: { Metric: { Value } } }) => ({
 
 export default {
     weather,
-    keyAndCity,
     forecast,
     geoPositionParams
 };

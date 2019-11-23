@@ -3,6 +3,7 @@ $appFontFamily: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
 $bold: 700;
 $fontSizeLarge: 16px;
 $fontSizeSmall: 12px;
+$h1FontSizeSmall: 26px;
 
 // Colors
 $black: rgba(0, 0, 0, 1);
@@ -41,11 +42,15 @@ $cardWidth: 250px;
 
 // Input
 $inputWidthLarge: 400px;
-$inputWidthSmall: 300px;
+$inputWidthSmall: 342px;
 $inputHeight: 30px;
 
 // Others
 $toggleButtonWidth: 80px;
-$iconMargin: 5px;
-$singleCityCardMargin: 10px;
+$iconMargin: 7px;
 $boxShadow: rgba(207, 0, 15, .2) .5px .5px 5px;
+
+// Media
+$medium: 650px;
+$small: 550px;
+$verySmall: 450px;
