@@ -65,7 +65,7 @@ class Main extends Component {
         const { autocompleteTerms, isLight } = this.props;
         const { current: { value } } = this.inputRef;
 
-        if(autocompleteTerms && value){
+        if(actionHelpers.validators.array(autocompleteTerms) && value){
             const { focusedElemIdx } = this.state;
             let autocompleteElems = [];
             this.autocompleteRefs = [];
@@ -193,7 +193,13 @@ class Main extends Component {
                     }
                     break;
                 case ENTER:
-                    this.handleAutocompleteClick(autocompleteTerms[focusedElemIdx].name);
+                    if(focusedElemIdx){
+                        this.handleAutocompleteClick(autocompleteTerms[focusedElemIdx].name);
+
+                        return;
+                    }
+
+                    this.handleAutocompleteClick(this.inputRef.current.value);
 
                     return;
                 case ESCAPE:
@@ -254,12 +260,7 @@ class Main extends Component {
     };
 
     renderError(){
-        const { selectedWeather } = this.props;
-        let error = this.state.inputError;
-
-        if(!error && selectedWeather){
-            error = selectedWeather.error;
-        }
+        const error = this.state.inputError || this.props.serverError;
 
         if(error){
             const { isLight } = this.props;
@@ -342,6 +343,7 @@ class Main extends Component {
 
     render() {
         const { term, autocompleteElems } = this.state;
+        const { serverError } = this.props;
 
         return (
             <>
@@ -359,13 +361,15 @@ class Main extends Component {
                     </div>
                     {this.renderError()}
                 </form>
-                {this.renderContainer()}
+                {!serverError && this.renderContainer()}
             </>
         );
     }
 }
 
-const mapStateToProps = ({ weather: { selectedWeather, favorites = [], autocompleteTerms = [] }, app: { isMainPage, isLight, isCelsius } }, { isFirstLoad, onFirstLoad }) => {
+const mapStateToProps = ({ weather: { selectedWeather = {}, favorites = [], autocompleteTerms = [] }, app: { isMainPage, isLight, isCelsius } }, { isFirstLoad, onFirstLoad }) => {
+    const serverError = selectedWeather.error || favorites.error || autocompleteTerms.error;
+
     return {
         selectedWeather,
         favorites,
@@ -374,7 +378,8 @@ const mapStateToProps = ({ weather: { selectedWeather, favorites = [], autocompl
         isLight,
         isCelsius,
         isFirstLoad,
-        onFirstLoad
+        onFirstLoad,
+        serverError
     };
 };
 
