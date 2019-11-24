@@ -51,6 +51,10 @@ const asyncCalls = {
         return fetchedTerms;
     },
     fetchWeather: async (key, name) => {
+        if(!key){
+            return errorMessages.defaultError;
+        }
+
         const cachedWeather = CacheInstance.getWeather(key);
 
         if (cachedWeather) {
