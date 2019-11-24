@@ -62,13 +62,15 @@ class Main extends Component {
     }
 
     createAutocompleteElement() {
-        const { autocompleteTerms, isLight, containerRef } = this.props;
+        const { autocompleteTerms, isLight } = this.props;
         const { current: { value } } = this.inputRef;
 
         if(autocompleteTerms && value){
             const { focusedElemIdx } = this.state;
             let autocompleteElems = [];
             this.autocompleteRefs = [];
+
+            document.addEventListener('click', this.throttledCloseAutocomplete);
 
             autocompleteTerms.forEach(({ name, key } ) => {
                 const autocompletePrefix = name.substr(0, value.length);
@@ -109,14 +111,10 @@ class Main extends Component {
                 autocompleteElems,
                 focusedElemIdx
             });
-
-            containerRef.addEventListener('click', this.throttledCloseAutocomplete);
         }
     }
 
     closeAutocomplete = (setState = true) => {
-        const { containerRef } = this.props;
-
         if(setState){
             this.safeSetState({
                 autocompleteElems: null,
@@ -126,7 +124,7 @@ class Main extends Component {
 
         this.autocompleteRefs = null;
 
-        containerRef.removeEventListener('click', this.throttledCloseAutocomplete);
+        document.removeEventListener('click', this.throttledCloseAutocomplete);
     };
 
     updateAutocompleteClasses(focusedElemIdx, updatedFocusedElemIdx){
@@ -138,7 +136,7 @@ class Main extends Component {
         this._isMounted && this.setState(newState);
     };
 
-    onFavoritesClick = () => {
+    onFavoritesClick = _.throttle(() => {
         const { selectedWeather, favorites } = this.props;
 
         if (componentsHelpers.calculations.isFavorite(selectedWeather, favorites)) {
@@ -159,7 +157,7 @@ class Main extends Component {
 
             addFavorite(favorite);
         }
-    };
+    }, TIME_PERIOD);
 
     throttledCloseAutocomplete = _.throttle(this.closeAutocomplete, TIME_PERIOD);
 
@@ -173,9 +171,7 @@ class Main extends Component {
         this.closeAutocomplete(false);
     };
 
-    handleAutocompleteKeys = (e) => {
-        const key = e.key;
-
+    handleAutocompleteKeys = (key) => {
         if(actionHelpers.validators.array(this.autocompleteRefs)){
             const { autocompleteTerms } = this.props;
             const { focusedElemIdx } = this.state;
@@ -216,9 +212,8 @@ class Main extends Component {
         }
     };
 
-    onInputChange = ({ target }) => {
+    onInputChange = (value) => {
         const { getAutocompleteTerms } = this.props;
-        const value = target.value;
 
         this.safeSetState({
             term: value
@@ -317,7 +312,7 @@ class Main extends Component {
         return (
             <div className="favoritesButtonContainer">
                 <i className={iconClasses}/>
-                <button className={buttonClasses} onClick={_.throttle(this.onFavoritesClick, TIME_PERIOD)}>
+                <button className={buttonClasses} onClick={this.onFavoritesClick}>
                     { isFavorite ? translations.main.deleteFavoritesButtonText : translations.main.addFavoritesButtonText }
                 </button>
             </div>
@@ -356,8 +351,8 @@ class Main extends Component {
                             type="text"
                             value={term}
                             placeholder={translations.main.inputPlaceholder}
-                            onChange={_.throttle((e) => this.onInputChange(e), TIME_PERIOD)}
-                            onKeyDown={_.throttle((e) => this.handleAutocompleteKeys(e), TIME_PERIOD)}
+                            onChange={({ target: { value } }) => _.throttle((value) => this.onInputChange(value), TIME_PERIOD)(value)}
+                            onKeyDown={({ key }) => _.throttle((key) => this.handleAutocompleteKeys(key), TIME_PERIOD)(key)}
                             ref={this.inputRef}
                         />
                         {autocompleteElems}

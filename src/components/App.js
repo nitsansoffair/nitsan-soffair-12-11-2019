@@ -35,7 +35,7 @@ class App extends Component {
                 <BrowserRouter>
                     <Header/>
                     <Switch>
-                        <Route path="/" exact render={() => (<Main isFirstLoad={isFirstLoad} onFirstLoad={this.onFirstLoad} containerRef={this.containerRef.current}/>)}/>
+                        <Route path="/" exact render={() => (<Main isFirstLoad={isFirstLoad} onFirstLoad={this.onFirstLoad}/>)}/>
                         <Route path="/favorites" exact render={() => (<Favorites/>)}/>
                     </Switch>
                 </BrowserRouter>
