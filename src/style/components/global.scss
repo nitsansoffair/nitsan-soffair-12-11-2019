@@ -8,6 +8,7 @@ h1 {
     text-align: center;
 
     @media (max-width: map-get($media, "verySmall")){
+        margin: $h1SmallScreenMargin;
         font-size: map-get($fontSize, "h1Small");
     }
 }
